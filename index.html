@@ -607,8 +607,38 @@
 
             const bytes = await resp.arrayBuffer();
             const pdf = await PDFDocument.load(bytes);
+            
+            // Check se il file rientra tra quelli "Fronte/Retro"
+            const isDoubleSided = window.APP_CONFIG.DOUBLE_SIDED_FILES && 
+                                  window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+
+            // Regola 1: Ogni nuovo documento deve iniziare su una pagina dispari (lato frontale del foglio fisico).
+            // Se le pagine attuali nel PDF finale sono dispari, significa che la prossima pagina stampata
+            // finirebbe sul RETRO dell'ultimo foglio. Per evitare di sovrapporre due documenti sullo stesso foglio,
+            // inseriamo una pagina bianca.
+            if (merged.getPageCount() % 2 !== 0) {
+              merged.addPage([pdf.getPage(0).getWidth(), pdf.getPage(0).getHeight()]);
+              console.log(`Aggiunta pagina bianca prima di ${filename} per forzare la stampa sul fronte del nuovo foglio`);
+            }
+
             const pages = await merged.copyPages(pdf, pdf.getPageIndices());
-            pages.forEach(p => merged.addPage(p));
+            
+            // Regola 2 & 3: Inserimento pagine
+            if (isDoubleSided) {
+              // Fronte-Retro: Tutte le pagine attaccate (nessuna pagina bianca extra tra le pagine del documento)
+              pages.forEach(p => merged.addPage(p));
+            } else {
+              // Solo Fronte: Inseriamo una pagina bianca dopo OGNI pagina reale di questo documento
+              const width = pages[0].getWidth();
+              const height = pages[0].getHeight();
+              
+              pages.forEach(p => {
+                merged.addPage(p);
+                // Aggiungi una pagina vuota per forzare il "retro" bianco del foglio
+                merged.addPage([width, height]);
+              });
+              console.log(`Documento ${filename} elaborato come SOLO FRONTE (aggiunte pagine bianche d'intermezzo)`);
+            }
 
             done++;
             progressFill.style.width = `${Math.round(done / totalFiles * 100)}%`;

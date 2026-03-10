@@ -43,5 +43,24 @@ window.APP_CONFIG = {
     IBAN_PDF: 'IBAN_MASTER_INTERVENTI_EST.pdf',
 
     // Nome esatto del documento dell'anestesia (da saltare se l'intervento è in altre cliniche)
-    ANESTESIA_PDF: '2 consenso anestesia, liberatoria, richiesta cart clin.pdf'
+    ANESTESIA_PDF: '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
+
+    // --- LOGICA STAMPA FRONTE/RETRO ---
+    
+    // Elenco esatto dei file che DEVONO essere stampati fronte-retro.
+    // Gli altri file non in questa lista avranno pagine bianche inserite per forzare la stampa solo fronte.
+    DOUBLE_SIDED_FILES: [
+        '1 cartella clinica.pdf',
+        '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
+        '3 Consenso Generico .pdf',
+        'FAP_MODULO_POLITECH.pdf',
+        'ADDOMINOPLASTICA.pdf',
+        'BLEFAROPLASTICA.pdf',
+        'LIFTING_DEL_VISO.pdf',
+        'LIPOSUZIONE.pdf',
+        'MASTOPLASTICA ADDITIVA.pdf',
+        'MASTOPLASTICA RIDUTTIVA.pdf',
+        'OTOPLASTICA.pdf',
+        'RINOPLASTICA.pdf'
+    ]
 };
