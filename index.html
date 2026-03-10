@@ -1294,37 +1294,35 @@
             // y is measured from top; pdf-lib converts to height-y internally
             // CALIBRATED: Cartella Clinica ✓  — Others: initial estimates
             // =========================================================
+            // Nome completo per i moduli con campo unico "Il/La sottoscritto/a"
+            const fullName = [pazCognome, pazNome].filter(Boolean).join(' ');
+
             const PER_DOC_COORDS = {
+              // ✓ CARTELLA CLINICA: campi separati (Cognome, Nome)
               '1 cartella clinica.pdf': [
-                [pazCognome, 107, 160],  // Cognome ✓ calibrato
-                [pazNome,    388, 160],  // Nome    ✓ calibrato
+                [pazCognome, 107, 160],
+                [pazNome,    388, 160],
               ],
-              // Scheda Anagrafica: "Cognome ___ Nome ___" — riga 1 dati
+              // ✓ SCHEDA ANAGRAFICA: campi separati (Cognome, Nome)
               '0 SCHEDA ANAGRAFICA 2026.pdf': [
                 [pazCognome,  88, 103],
                 [pazNome,    360, 103],
               ],
-              // Dichiarazione / consenso con "Il/La sottoscritto/a ___" — riga 1
+              // -- Moduli con campo unico "Il/La sottoscritto/a" o "Io Sottoscritto/a" --
               '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': [
-                [pazCognome, 150, 105],
-                [pazNome,    330, 105],
+                [fullName, 150, 105],
               ],
-              // "Io Sottoscritto/a ___" o "Cognome Nome" — riga 1
               '3 Consenso Generico .pdf': [
-                [pazCognome, 130, 115],
-                [pazNome,    310, 115],
+                [fullName, 130, 115],
               ],
               '4 Lettera Dimissioni Pazienti.pdf': [
-                [pazCognome,  50,  85],  // sopra il titolo "LETTERA DI DIMISSIONI"
-                [pazNome,    280,  85],
+                [fullName,  50,  85],
               ],
               '5 Ricetta PRESCRIZIONE medica dimissione.pdf': [
-                [pazCognome,  90, 108],
-                [pazNome,    370, 108],
+                [fullName,  90, 108],
               ],
               '6 Tabella Medicazioni.pdf': [
-                [pazCognome,  90, 108],
-                [pazNome,    370, 108],
+                [fullName,  90, 108],
               ],
             };
 
