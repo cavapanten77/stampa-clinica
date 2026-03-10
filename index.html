@@ -476,6 +476,19 @@
     </header>
 
     <div class="glass-card">
+      <!-- Selettore Singolo Documento -->
+      <div class="form-group" id="single-file-group">
+        <label class="form-label" for="single-file-select" style="color: var(--accent-tertiary);">Stampa Singolo File (Opzionale)</label>
+        <div class="select-wrapper">
+          <select id="single-file-select">
+            <option value="">Nessun file singolo (Stampa l'intero pacchetto clinica)</option>
+            <!-- Injected Options -->
+          </select>
+        </div>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+
       <!-- Sede dell'intervento -->
       <div class="form-group" id="clinic-group">
         <label class="form-label" for="clinic-select">Sede Intervento</label>
@@ -519,23 +532,69 @@
       const statusEl = document.getElementById('status');
       const progressContainer = document.getElementById('progress-container');
       const progressFill = document.getElementById('progress-fill');
+      
+      const singleFileSelect = document.getElementById('single-file-select');
+      const clinicGroup = document.getElementById('clinic-group');
       const clinicSelect = document.getElementById('clinic-select');
       const interventionGroup = document.getElementById('intervention-group');
       const interventionSelect = document.getElementById('intervention-select');
 
-      // Populate Dropdown
-      if (window.APP_CONFIG && window.APP_CONFIG.INTERVENTIONS) {
-        const interventions = Object.keys(window.APP_CONFIG.INTERVENTIONS).sort();
-        if (interventions.length > 0) {
-          interventionGroup.style.display = 'block';
-          interventions.forEach(name => {
-            const option = document.createElement('option');
-            option.value = window.APP_CONFIG.INTERVENTIONS[name];
-            option.textContent = name;
-            interventionSelect.appendChild(option);
-          });
+      // Populate Intervention Dropdown & Single File Dropdown
+      if (window.APP_CONFIG) {
+        // Collect all possible files for the single-file dropdown
+        const allFilesSet = new Set();
+        
+        if (window.APP_CONFIG.PDF_FILES) {
+          window.APP_CONFIG.PDF_FILES.forEach(f => allFilesSet.add(f));
         }
+        if (window.APP_CONFIG.PROTESI_PDF) allFilesSet.add(window.APP_CONFIG.PROTESI_PDF);
+        if (window.APP_CONFIG.IBAN_PDF) allFilesSet.add(window.APP_CONFIG.IBAN_PDF);
+        if (window.APP_CONFIG.ANESTESIA_PDF) allFilesSet.add(window.APP_CONFIG.ANESTESIA_PDF);
+
+        if (window.APP_CONFIG.INTERVENTIONS) {
+          const interventions = Object.keys(window.APP_CONFIG.INTERVENTIONS).sort();
+          if (interventions.length > 0) {
+            interventionGroup.style.display = 'block';
+            interventions.forEach(name => {
+              // Add to intervention dropdown
+              const option = document.createElement('option');
+              option.value = window.APP_CONFIG.INTERVENTIONS[name];
+              option.textContent = name;
+              interventionSelect.appendChild(option);
+              
+              // Map intervention file for single select
+              allFilesSet.add(window.APP_CONFIG.INTERVENTIONS[name]);
+            });
+          }
+        }
+        
+        // Populate single file dropdown
+        const sortedFiles = Array.from(allFilesSet).sort();
+        sortedFiles.forEach(filename => {
+           const option = document.createElement('option');
+           option.value = filename;
+           option.textContent = filename;
+           singleFileSelect.appendChild(option);
+        });
       }
+
+      // Handle UI feedback when a single file is selected
+      singleFileSelect.addEventListener('change', (e) => {
+        const isSingleFileSelected = e.target.value !== "";
+        if (isSingleFileSelected) {
+          clinicGroup.style.opacity = '0.3';
+          clinicSelect.disabled = true;
+          interventionGroup.style.opacity = '0.3';
+          interventionSelect.disabled = true;
+          printBtn.innerHTML = `<span class="btn-icon">📄</span> Stampa File Singolo`;
+        } else {
+          clinicGroup.style.opacity = '1';
+          clinicSelect.disabled = false;
+          interventionGroup.style.opacity = '1';
+          interventionSelect.disabled = false;
+          printBtn.innerHTML = `<span class="btn-icon">🖨️</span> Genera e Stampa Documenti`;
+        }
+      });
 
       function setStatus(msg, type = 'info') {
         statusEl.textContent = msg;
@@ -551,36 +610,47 @@
           return;
         }
 
-        let files = [...window.APP_CONFIG.PDF_FILES];
-        const isExternalClinic = clinicSelect.value === 'external';
+        let files = [];
+        
+        // Modalità: Singolo File vs Intero Pacchetto
+        const singleFileTarget = singleFileSelect.value;
+        const isSingleFileMode = singleFileTarget !== "";
 
-        // 1. Logica Sede Esterna (rimuovere anestesia)
-        if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
-          files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
+        if (isSingleFileMode) {
+            files.push(singleFileTarget);
+        } else {
+            // -- Logica Pacchetto ---
+            files = [...window.APP_CONFIG.PDF_FILES];
+            const isExternalClinic = clinicSelect.value === 'external';
+
+            // 1. Logica Sede Esterna (rimuovere anestesia)
+            if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
+              files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
+            }
+
+            // 2. Handle specific interventions logic & Protesi
+            const selectedIntervention = interventionSelect.value;
+            if (selectedIntervention) {
+              files.push(selectedIntervention);
+
+              const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
+              if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
+                window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText) &&
+                window.APP_CONFIG.PROTESI_PDF) {
+                files.push(window.APP_CONFIG.PROTESI_PDF);
+              }
+            }
+
+            // 3. Logica Sede Esterna (aggiungere IBAN in fondo)
+            if (isExternalClinic && window.APP_CONFIG.IBAN_PDF) {
+              files.push(window.APP_CONFIG.IBAN_PDF);
+            }
         }
 
         if (files.length === 0) {
           setStatus('Errore: Nessun file configurato nel sistema.', 'error');
           progressContainer.classList.add('visible');
           return;
-        }
-
-        // 2. Handle specific interventions logic & Protesi
-        const selectedIntervention = interventionSelect.value;
-        if (selectedIntervention) {
-          files.push(selectedIntervention);
-
-          const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
-          if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
-            window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText) &&
-            window.APP_CONFIG.PROTESI_PDF) {
-            files.push(window.APP_CONFIG.PROTESI_PDF);
-          }
-        }
-
-        // 3. Logica Sede Esterna (aggiungere IBAN in fondo)
-        if (isExternalClinic && window.APP_CONFIG.IBAN_PDF) {
-          files.push(window.APP_CONFIG.IBAN_PDF);
         }
 
         const totalFiles = files.length;
@@ -612,11 +682,8 @@
             const isDoubleSided = window.APP_CONFIG.DOUBLE_SIDED_FILES && 
                                   window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
 
-            // Regola 1: Ogni nuovo documento deve iniziare su una pagina dispari (lato frontale del foglio fisico).
-            // Se le pagine attuali nel PDF finale sono dispari, significa che la prossima pagina stampata
-            // finirebbe sul RETRO dell'ultimo foglio. Per evitare di sovrapporre due documenti sullo stesso foglio,
-            // inseriamo una pagina bianca.
-            if (merged.getPageCount() % 2 !== 0) {
+            // Regola 1 (Solo se siamo in modalità Pacchetto): Ogni nuovo documento deve iniziare su fronte.
+            if (!isSingleFileMode && merged.getPageCount() % 2 !== 0) {
               merged.addPage([pdf.getPage(0).getWidth(), pdf.getPage(0).getHeight()]);
               console.log(`Aggiunta pagina bianca prima di ${filename} per forzare la stampa sul fronte del nuovo foglio`);
             }
@@ -624,11 +691,11 @@
             const pages = await merged.copyPages(pdf, pdf.getPageIndices());
             
             // Regola 2 & 3: Inserimento pagine
-            if (isDoubleSided) {
-              // Fronte-Retro: Tutte le pagine attaccate (nessuna pagina bianca extra tra le pagine del documento)
+            if (isSingleFileMode || isDoubleSided) {
+              // Singolo File o Fronte-Retro: Tutte le pagine attaccate (nessuna pagina bianca extra)
               pages.forEach(p => merged.addPage(p));
             } else {
-              // Solo Fronte: Inseriamo una pagina bianca dopo OGNI pagina reale di questo documento
+              // Solo Fronte (Modalità Pacchetto): Inseriamo una pagina bianca dopo OGNI pagina reale di questo documento
               const width = pages[0].getWidth();
               const height = pages[0].getHeight();
               
