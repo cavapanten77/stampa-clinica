@@ -626,6 +626,99 @@
       border-left: 4px solid var(--accent-secondary);
     }
 
+    /* PATIENT DATA PANEL */
+    .dati-paziente-toggle {
+      width: 100%;
+      text-align: left;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(124, 58, 237, 0.08));
+      border: 2.2px solid rgba(37, 99, 235, 0.25);
+      color: var(--accent-primary);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0;
+      transition: all 0.2s ease;
+    }
+
+    .dati-paziente-toggle:hover {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(124, 58, 237, 0.14));
+    }
+
+    .dati-paziente-toggle .toggle-arrow {
+      transition: transform 0.3s ease;
+      font-style: normal;
+    }
+
+    .dati-paziente-toggle.open .toggle-arrow {
+      transform: rotate(180deg);
+    }
+
+    .dati-paziente-panel {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s ease, margin 0.2s ease;
+      margin-bottom: 0;
+    }
+
+    .dati-paziente-panel.open {
+      max-height: 600px;
+      margin-bottom: 14px;
+    }
+
+    .dati-paziente-inner {
+      padding: 10px 4px 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dati-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dati-input-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding-left: 2px;
+    }
+
+    .dati-input {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2.2px solid rgba(0, 0, 0, 0.2);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .dati-input:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .dati-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
     /* Bottom action bar */
     .action-bar {
       padding-top: 20px;
@@ -653,6 +746,56 @@
       </div>
       <h1><span class="gradient-text">Modulistica</span></h1>
       <p class="subtitle">Cosmedic SRL</p>
+    </div>
+
+    <!-- DATI PAZIENTE COLLAPSIBLE -->
+    <button class="dati-paziente-toggle" id="dati-paziente-toggle">
+      <span>🧑‍⚕️ Dati Paziente</span>
+      <i class="toggle-arrow">▾</i>
+    </button>
+    <div class="dati-paziente-panel" id="dati-paziente-panel">
+      <div class="dati-paziente-inner">
+        <div class="dati-row">
+          <div class="dati-input-group">
+            <span class="dati-input-label">Cognome</span>
+            <input class="dati-input" id="paz-cognome" type="text" placeholder="Rossi">
+          </div>
+          <div class="dati-input-group">
+            <span class="dati-input-label">Nome</span>
+            <input class="dati-input" id="paz-nome" type="text" placeholder="Mario">
+          </div>
+        </div>
+        <div class="dati-row">
+          <div class="dati-input-group">
+            <span class="dati-input-label">Data nascita</span>
+            <input class="dati-input" id="paz-data-nascita" type="text" placeholder="01/01/1980">
+          </div>
+          <div class="dati-input-group">
+            <span class="dati-input-label">Sesso</span>
+            <input class="dati-input" id="paz-sesso" type="text" placeholder="M/F" maxlength="1">
+          </div>
+        </div>
+        <div class="dati-input-group">
+          <span class="dati-input-label">Luogo di nascita</span>
+          <input class="dati-input" id="paz-luogo-nascita" type="text" placeholder="Roma">
+        </div>
+        <div class="dati-input-group">
+          <span class="dati-input-label">Città Residenza</span>
+          <input class="dati-input" id="paz-citta" type="text" placeholder="Milano">
+        </div>
+        <div class="dati-input-group">
+          <span class="dati-input-label">Diagnosi</span>
+          <input class="dati-input" id="paz-diagnosi" type="text" placeholder="...">
+        </div>
+        <div class="dati-input-group">
+          <span class="dati-input-label">Intervento proposto</span>
+          <input class="dati-input" id="paz-intervento" type="text" placeholder="...">
+        </div>
+        <div class="dati-input-group">
+          <span class="dati-input-label">Data intervento</span>
+          <input class="dati-input" id="paz-data-intervento" type="text" placeholder="dd/mm/yyyy">
+        </div>
+      </div>
     </div>
 
     <!-- TABS NAVIGATION (vertical) -->
@@ -790,6 +933,14 @@
       const interventionSelect = document.getElementById('intervention-select');
 
       const aicpeSelect = document.getElementById('aicpe-select');
+
+      // --- DATI PAZIENTE TOGGLE ---
+      const dpToggle = document.getElementById('dati-paziente-toggle');
+      const dpPanel = document.getElementById('dati-paziente-panel');
+      dpToggle.addEventListener('click', () => {
+        dpToggle.classList.toggle('open');
+        dpPanel.classList.toggle('open');
+      });
 
       // 1. TABS LOGIC
       tabs.forEach(tab => {
@@ -1063,6 +1214,66 @@
 
             done++;
             progressFill.style.width = `${Math.round(done / totalFiles * 100)}%`;
+          }
+
+          // --- OVERLAY DATI PAZIENTE ---
+          const pazData = {
+            cognome:       document.getElementById('paz-cognome').value.trim(),
+            nome:          document.getElementById('paz-nome').value.trim(),
+            sesso:         document.getElementById('paz-sesso').value.trim(),
+            dataNascita:   document.getElementById('paz-data-nascita').value.trim(),
+            luogoNascita:  document.getElementById('paz-luogo-nascita').value.trim(),
+            citta:         document.getElementById('paz-citta').value.trim(),
+            diagnosi:      document.getElementById('paz-diagnosi').value.trim(),
+            intervento:    document.getElementById('paz-intervento').value.trim(),
+            dataIntervento: document.getElementById('paz-data-intervento').value.trim()
+          };
+
+          const hasPazData = Object.values(pazData).some(v => v !== '');
+          if (hasPazData) {
+            setStatus('Compilazione dati paziente nel documento...', 'info');
+            const font = await merged.embedFont(PDFLib.StandardFonts.Helvetica);
+            const fontSize = 9;
+            const color = PDFLib.rgb(0.05, 0.05, 0.05);
+            const pages = merged.getPages();
+
+            // Find the page that contains cartella clinica (first page by default, or search)
+            // We look for the page index in the merge that corresponds to '1 cartella clinica.pdf'
+            let cartellaPagesStart = 0; // default to first page
+            let pagesTraversed = 0;
+            for (const filename of files) {
+              if (filename === '1 cartella clinica.pdf') {
+                cartellaPagesStart = pagesTraversed;
+                break;
+              }
+              // Account for single-sided padding
+              const isDS = window.APP_CONFIG.DOUBLE_SIDED_FILES && window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+              if (!isSingleFileMode && !isDS) {
+                // Each page gets a blank page too — but we fetched the pdf earlier, can't recount here
+                // Approximate: just go by 2x (each page has a blank after)
+                pagesTraversed += 2; // rough estimate for 1-page docs
+              } else {
+                pagesTraversed += 2;
+              }
+            }
+
+            const p = pages[Math.min(cartellaPagesStart, pages.length - 1)];
+            const { height } = p.getSize();
+
+            const draw = (text, x, y) => {
+              if (text) p.drawText(text, { x, y: height - y, size: fontSize, font, color });
+            };
+
+            // Coordinates tuned to "1 cartella clinica.pdf" layout:
+            draw(pazData.cognome,        107, 160);
+            draw(pazData.nome,           320, 160);
+            draw(pazData.sesso,          555, 160);
+            draw(pazData.luogoNascita,   107, 178);
+            draw(pazData.dataNascita,    270, 178);
+            draw(pazData.citta,          385, 178);
+            draw(pazData.diagnosi,       100, 198);
+            draw(pazData.intervento,     140, 220);
+            draw(pazData.dataIntervento, 420, 220);
           }
 
           setStatus('Assemblaggio del documento finale...', 'info');
