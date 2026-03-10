@@ -1326,15 +1326,15 @@
             };
 
             // Coordinates tuned to "1 cartella clinica.pdf" layout:
-            draw(pazData.cognome,        107, 160);
-            draw(pazData.nome,           320, 160);
-            draw(pazData.sesso,          555, 160);
-            draw(pazData.luogoNascita,   107, 178);
-            draw(pazData.dataNascita,    270, 178);
-            draw(pazData.citta,          385, 178);
+            draw(pazData.cognome,        107, 160);   // Cognome: starts right after label
+            draw(pazData.nome,           388, 160);   // Nome: past the "Nome" label (was 320)
+            draw(pazData.sesso,          507, 160);   // Sesso: just before M/F (was 555)
+            draw(pazData.luogoNascita,   207, 178);   // Luogo: past long label (was 107)
+            draw(pazData.dataNascita,    305, 178);   // Data nascita (was 270)
+            draw(pazData.citta,          455, 178);   // Città (was 385)
             draw(pazData.diagnosi,       100, 198);
-            draw(pazData.intervento,     140, 220);
-            draw(pazData.dataIntervento, 420, 220);
+            draw(pazData.intervento,     185, 220);   // Intervento (was 140)
+            draw(pazData.dataIntervento, 425, 220);
           }
 
           setStatus('Assemblaggio del documento finale...', 'info');
