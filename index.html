@@ -1296,32 +1296,35 @@
             // =========================================================
             const PER_DOC_COORDS = {
               '1 cartella clinica.pdf': [
-                [pazCognome, 107, 160],  // Cognome ✓
-                [pazNome,    388, 160],  // Nome    ✓
+                [pazCognome, 107, 160],  // Cognome ✓ calibrato
+                [pazNome,    388, 160],  // Nome    ✓ calibrato
               ],
+              // Scheda Anagrafica: "Cognome ___ Nome ___" — riga 1 dati
               '0 SCHEDA ANAGRAFICA 2026.pdf': [
-                [pazCognome,  90, 132],  // Cognome — TBD
-                [pazNome,    380, 132],  // Nome    — TBD
+                [pazCognome,  90, 103],
+                [pazNome,    370, 103],
               ],
+              // Dichiarazione / consenso con "Il/La sottoscritto/a ___" — riga 1
               '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': [
-                [pazCognome,  90, 132],
-                [pazNome,    380, 132],
+                [pazCognome, 150, 105],
+                [pazNome,    330, 105],
               ],
+              // "Io Sottoscritto/a ___" o "Cognome Nome" — riga 1
               '3 Consenso Generico .pdf': [
-                [pazCognome,  90, 132],
-                [pazNome,    380, 132],
+                [pazCognome, 130, 115],
+                [pazNome,    310, 115],
               ],
               '4 Lettera Dimissioni Pazienti.pdf': [
-                [pazCognome,  90, 132],
-                [pazNome,    380, 132],
+                [pazCognome,  90, 108],
+                [pazNome,    370, 108],
               ],
               '5 Ricetta PRESCRIZIONE medica dimissione.pdf': [
-                [pazCognome,  90, 132],
-                [pazNome,    380, 132],
+                [pazCognome,  90, 108],
+                [pazNome,    370, 108],
               ],
               '6 Tabella Medicazioni.pdf': [
-                [pazCognome,  90, 132],
-                [pazNome,    380, 132],
+                [pazCognome,  90, 108],
+                [pazNome,    370, 108],
               ],
             };
 
