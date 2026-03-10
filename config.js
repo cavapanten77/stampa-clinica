@@ -10,9 +10,55 @@ window.APP_CONFIG = {
         '4 Lettera Dimissioni Pazienti.pdf',
         '5 Ricetta PRESCRIZIONE medica dimissione.pdf',
         '6 Tabella Medicazioni.pdf',
+        '7 Chirurgia ambulatoriale.pdf',
+        'TABELLA X SCHEDE INTERVENTI.pdf',
+        'CERTIFICATO.pdf',
+        'CONSENSO BTX-IAL.pdf',
+        'CONSENSO MINORENNI.pdf'
+    ],
+
+    // Categoria: SCHEDE (Selezione granulare)
+    SCHEDE_FILES: [
+        '0 SCHEDA ANAGRAFICA 2026.pdf',
+        '1 cartella clinica.pdf',
+        '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
+        '3 Consenso Generico .pdf',
+        '4 Lettera Dimissioni Pazienti.pdf',
+        '5 Ricetta PRESCRIZIONE medica dimissione.pdf',
+        '6 Tabella Medicazioni.pdf',
+        'MODULO POLITECH.pdf',
+        'IBAN.pdf',
         'TABELLA X SCHEDE INTERVENTI.pdf',
         'CONSENSO BTX-IAL.pdf',
         'CONSENSO MINORENNI.pdf'
+    ],
+
+    // Categoria: LIBERATORIE
+    LIBERATORIE_FILES: [
+        'liberatoria guida.pdf',
+        'liberatoria reintervento int terzi.pdf',
+        'liberatoria reintervento tullia.pdf',
+        'liberatoria x mancato accompagnatore.pdf'
+    ],
+
+    // Categoria: CERTIFICATI
+    CERTIFICATI_FILES: [
+        'Certficato lavoro per visita contr.pdf',
+        'certificato lavoro dipendenti.pdf',
+        'Certificato Lavoro per Intervento.pdf'
+    ],
+
+    // Categoria: INTERVENTI IN LOCALE
+    INTERVENTI_LOCALE_FILES: [
+        '3 Consenso Generico .pdf',
+        '6 Tabella Medicazioni.pdf',
+        '7 Chirurgia ambulatoriale.pdf'
+    ],
+
+    // Categoria: ADVISOR
+    ADVISOR_FILES: [
+        '0 SCHEDA ANAGRAFICA 2026.pdf',
+        'CONSENSO BTX-IAL.pdf'
     ],
 
     // I consensi specifici associati agli interventi
@@ -39,12 +85,12 @@ window.APP_CONFIG = {
     ],
 
     // Nome esatto del file del modulo Protesi
-    PROTESI_PDF: 'FAP_MODULO_POLITECH.pdf',
+    PROTESI_PDF: 'MODULO POLITECH.pdf',
 
     // --- NUOVA LOGICA "ALTRE CLINICHE" ---
 
     // Nome esatto del documento IBAN da caricare su Supabase per gli interventi in altre cliniche
-    IBAN_PDF: 'IBAN_MASTER_INTERVENTI_EST.pdf',
+    IBAN_PDF: 'IBAN.pdf',
 
     // Nome esatto del documento dell'anestesia (da saltare se l'intervento è in altre cliniche)
     ANESTESIA_PDF: '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
@@ -58,6 +104,8 @@ window.APP_CONFIG = {
         '1 cartella clinica.pdf',
         '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
         '3 Consenso Generico .pdf',
+        '7 Chirurgia ambulatoriale.pdf',
+        'CERTIFICATO.pdf',
         'CONSENSO BTX-IAL.pdf',
         'CONSENSO MINORENNI.pdf',
         'FAP_MODULO_POLITECH.pdf',

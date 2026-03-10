@@ -54,18 +54,18 @@
       --font-body: 'Plus Jakarta Sans', sans-serif;
     }
 
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: var(--font-body);
       background-color: var(--bg-base);
       color: var(--text-main);
-      min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      flex-direction: row;
       position: relative;
-      overflow-x: hidden;
     }
 
     /* MESH GRADIENT BACKGROUND ANIMATION */
@@ -131,61 +131,71 @@
       }
     }
 
-    /* LAYOUT & ENTRANCE ANIMATIONS */
-    .container {
-      width: 100%;
-      max-width: 540px;
+    /* ===================== HORIZONTAL LAYOUT ===================== */
+
+    /* LEFT SIDEBAR */
+    .sidebar {
+      width: 240px;
+      min-width: 240px;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      padding: 32px 20px;
+      background: rgba(11, 14, 20, 0.85);
+      border-right: 1px solid rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 20;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.1s forwards cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+
+    /* MAIN CONTENT AREA */
+    .main-content {
+      flex: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 32px 40px;
       z-index: 10;
       opacity: 0;
-      animation: fadeUp 1s 0.2s forwards cubic-bezier(0.16, 1, 0.3, 1);
+      animation: fadeUp 0.8s 0.25s forwards cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes fadeUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
-    /* HEADER */
-    header {
+    /* SIDEBAR HEADER */
+    .sidebar-header {
       text-align: center;
-      margin-bottom: 40px;
-      width: 100%;
+      margin-bottom: 36px;
     }
 
     .logo-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 72px;
-      height: 72px;
+      width: 56px;
+      height: 56px;
       background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 22px;
-      font-size: 36px;
-      margin-bottom: 24px;
-      box-shadow: 0 0 40px rgba(139, 92, 246, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      font-size: 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 30px rgba(139, 92, 246, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05);
       position: relative;
     }
 
     .logo-badge::after {
       content: '';
       position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      bottom: -1px;
+      top: -1px; left: -1px; right: -1px; bottom: -1px;
       border-radius: inherit;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%);
+      background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
@@ -195,11 +205,11 @@
 
     h1 {
       font-family: var(--font-display);
-      font-size: 2.7rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      letter-spacing: -1px;
-      line-height: 1.1;
-      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 6px;
     }
 
     h1 .gradient-text {
@@ -212,37 +222,54 @@
 
     .subtitle {
       color: var(--text-muted);
-      font-size: 1.05rem;
+      font-size: 0.75rem;
       font-weight: 400;
       letter-spacing: 0.2px;
     }
 
-    /* GLASSMORPHISM CARD */
+    /* GLASSMORPHISM PANEL (main content) */
     .glass-card {
-      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
       background: var(--glass-bg);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--glass-border);
       border-top: 1px solid rgba(255, 255, 255, 0.15);
-      /* Highlighted top edge */
-      border-radius: 28px;
-      padding: 40px;
+      border-radius: 24px;
+      padding: 36px;
       box-shadow: var(--glass-shadow);
       position: relative;
-      overflow: hidden;
     }
 
     /* Inner subtle glow */
     .glass-card::before {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(180deg, var(--glass-highlight) 0%, rgba(255, 255, 255, 0) 100%);
       pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* Scrollable panel content */
+    .panel-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .panel-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .panel-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .panel-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
     }
 
     /* FORM ELEMENTS */
@@ -448,13 +475,14 @@
       color: var(--success) !important;
     }
 
-    /* FOOTER */
+    /* FOOTER (sidebar bottom) */
     footer {
-      margin-top: 60px;
-      color: rgba(255, 255, 255, 0.3);
-      font-size: 0.85rem;
-      z-index: 10;
+      margin-top: auto;
+      padding-top: 20px;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.75rem;
       letter-spacing: 0.5px;
+      text-align: center;
     }
 
     /* CHECKBOX GRID FOR BASE DOCS */
@@ -528,6 +556,96 @@
       line-height: 1.3;
       user-select: none;
     }
+
+    /* SIDEBAR TABS NAV (vertical) */
+    .tabs-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .tab-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-muted);
+      padding: 13px 16px;
+      border-radius: 12px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-btn .tab-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-main);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateX(3px);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(59,130,246,0.25), rgba(139,92,246,0.2));
+      color: white;
+      border-color: rgba(59,130,246,0.5);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15), inset 0 0 10px rgba(255,255,255,0.03);
+      transform: translateX(0);
+    }
+
+    /* Main area panel title */
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeUp 0.35s ease forwards;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .panel-desc {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      background: rgba(0,0,0,0.2);
+      padding: 16px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-secondary);
+    }
+
+    /* Bottom action bar */
+    .action-bar {
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      margin-top: 20px;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 
@@ -540,72 +658,131 @@
     <div class="orb orb-3"></div>
   </div>
 
-  <div class="container">
-    <header>
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
       <div class="logo-badge">⚕️</div>
       <h1>Stampa <span class="gradient-text">Clinica</span></h1>
-      <p class="subtitle">Cosmedic SRL – Generazione Automatica Referti</p>
-    </header>
+      <p class="subtitle">Cosmedic SRL</p>
+    </div>
 
+    <!-- TABS NAVIGATION (vertical) -->
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="tab-schede"><span class="tab-icon">📋</span>Schede</button>
+      <button class="tab-btn" data-tab="tab-interventi"><span class="tab-icon">🏥</span>Interventi</button>
+      <button class="tab-btn" data-tab="tab-aicpe"><span class="tab-icon">📝</span>Consensi AICPE</button>
+      <button class="tab-btn" data-tab="tab-locale"><span class="tab-icon">🏠</span>Interventi in Locale</button>
+      <button class="tab-btn" data-tab="tab-advisor"><span class="tab-icon">💼</span>Advisor</button>
+      <button class="tab-btn" data-tab="tab-liberatorie"><span class="tab-icon">📄</span>Liberatorie</button>
+      <button class="tab-btn" data-tab="tab-certificati"><span class="tab-icon">🎓</span>Certificati</button>
+    </nav>
+
+    <footer>&copy; 2026 Cosmedic SRL</footer>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
     <div class="glass-card">
-      <!-- Selettore Singolo Documento -->
-      <div class="form-group" id="single-file-group">
-        <label class="form-label" for="single-file-select" style="color: var(--accent-tertiary);">Stampa Singolo File (Opzionale)</label>
-        <div class="select-wrapper">
-          <select id="single-file-select">
-            <option value="">Nessun file singolo (Stampa l'intero pacchetto clinica)</option>
-            <!-- Injected Options -->
-          </select>
-        </div>
-      </div>
+      <!-- Scrollable panel area -->
+      <div class="panel-scroll">
 
-      <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
-      <div id="package-selectors">
-        <!-- Documenti Base -->
-        <div class="form-group" id="base-docs-group">
-          <label class="form-label">Documenti Base</label>
-          <div id="checkboxes-container" class="checkbox-grid">
-            <!-- Injected Checkboxes -->
+        <!-- TAB 1: SCHEDE -->
+        <div id="tab-schede" class="tab-panel active">
+          <h2 class="panel-title">📋 Schede</h2>
+          <div class="form-group">
+            <label class="form-label">Seleziona liberamente i documenti da unire:</label>
+            <div id="schede-checkboxes" class="checkbox-grid">
+              <!-- Injected Checkboxes -->
+            </div>
           </div>
         </div>
 
-        <!-- Sede dell'intervento -->
-        <div class="form-group" id="clinic-group">
-          <label class="form-label" for="clinic-select">Sede Intervento</label>
-          <div class="select-wrapper">
-            <select id="clinic-select">
-              <option value="cosmedic">Studio COSMEDIC (Standard)</option>
-              <option value="external">Altre Cliniche (Rimuove Anestesia, Aggiunge IBAN)</option>
-            </select>
+        <!-- TAB 2: INTERVENTI -->
+        <div id="tab-interventi" class="tab-panel">
+          <h2 class="panel-title">🏥 Interventi</h2>
+          <div class="form-group" id="clinic-group">
+            <label class="form-label" for="clinic-select">Sede Intervento</label>
+            <div class="select-wrapper">
+              <select id="clinic-select">
+                <option value="cosmedic">Studio COSMEDIC (Standard)</option>
+                <option value="external">Altre Cliniche (Rimuove Anestesia, Aggiunge IBAN)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" id="base-docs-group">
+            <label class="form-label">Documenti Base</label>
+            <div id="interventi-checkboxes" class="checkbox-grid">
+              <!-- Injected Checkboxes -->
+            </div>
+          </div>
+          <div class="form-group" id="intervention-group">
+            <label class="form-label" for="intervention-select">Intervento Specifico</label>
+            <div class="select-wrapper">
+              <select id="intervention-select">
+                <option value="">Nessun intervento specifico selezionato...</option>
+              </select>
+            </div>
           </div>
         </div>
 
-      <!-- Intervento Specifico -->
-      <div class="form-group" id="intervention-group" style="display:none;">
-        <label class="form-label" for="intervention-select">Intervento Specifico</label>
-        <div class="select-wrapper">
-          <select id="intervention-select">
-            <option value="">Nessun intervento (solo documenti base)</option>
-            <!-- Injected Options -->
-          </select>
+        <!-- TAB 3: CONSENSI AICPE -->
+        <div id="tab-aicpe" class="tab-panel">
+          <h2 class="panel-title">📝 Consensi AICPE</h2>
+          <div class="form-group">
+            <label class="form-label" for="aicpe-select">Scegli il Consenso AICPE da stampare singolarmente</label>
+            <div class="select-wrapper">
+              <select id="aicpe-select">
+                <option value="">Seleziona un consenso...</option>
+              </select>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <button class="btn-super" id="print-btn">
-        <span class="btn-icon">🖨️</span> Genera e Stampa Documenti
-      </button>
+        <!-- TAB 4: INTERVENTI IN LOCALE -->
+        <div id="tab-locale" class="tab-panel">
+          <h2 class="panel-title">🏠 Interventi in Locale</h2>
+          <p class="panel-desc">Questa sezione genera automaticamente un pacchetto contenente esclusivamente:<br>
+          <strong>3 Consenso Generico, 6 Tabella Medicazioni, 7 Chirurgia ambulatoriale</strong>.</p>
+        </div>
 
-      <div class="progress-container" id="progress-container">
-        <div class="progress-track">
+        <!-- TAB 5: ADVISOR -->
+        <div id="tab-advisor" class="tab-panel">
+          <h2 class="panel-title">💼 Advisor</h2>
+          <p class="panel-desc">Questa sezione genera automaticamente un pacchetto contenente esclusivamente:<br>
+          <strong>0 SCHEDA ANAGRAFICA, CONSENSO BTX-IAL</strong>.</p>
+        </div>
+
+        <!-- TAB 6: LIBERATORIE -->
+        <div id="tab-liberatorie" class="tab-panel">
+          <h2 class="panel-title">📄 Liberatorie</h2>
+          <p class="panel-desc">Seleziona le liberatorie da stampare:</p>
+          <div id="liberatorie-checkboxes" class="checkbox-grid"></div>
+        </div>
+
+        <!-- TAB 7: CERTIFICATI -->
+        <div id="tab-certificati" class="tab-panel">
+          <h2 class="panel-title">🎓 Certificati</h2>
+          <p class="panel-desc">Seleziona i certificati da stampare:</p>
+          <div id="certificati-checkboxes" class="checkbox-grid"></div>
+        </div>
+
+      </div><!-- end panel-scroll -->
+
+      <!-- ACTION BAR (sempre visibile in basso) -->
+      <div class="action-bar">
+        <button class="btn-super" id="print-btn">
+          <span class="btn-icon">🖨️</span> Genera e Stampa Documenti
+        </button>
+
+        <div class="progress-container" id="progress-container">
+          <div class="progress-track">
           <div class="progress-fill" id="progress-fill"></div>
         </div>
         <p id="status"></p>
       </div>
-    </div>
-
-    <footer>&copy; 2026 Cosmedic SRL</footer>
-  </div>
+    </div><!-- end action-bar -->
+    </div><!-- end glass-card -->
+  </main>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -614,34 +791,62 @@
       const progressContainer = document.getElementById('progress-container');
       const progressFill = document.getElementById('progress-fill');
       
-      const singleFileSelect = document.getElementById('single-file-select');
+      const tabs = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.tab-panel');
+
+      const schedeCheckboxes = document.getElementById('schede-checkboxes');
       
-      const packageSelectors = document.getElementById('package-selectors');
-      
-      const checkboxesContainer = document.getElementById('checkboxes-container');
       const clinicSelect = document.getElementById('clinic-select');
-      const interventionGroup = document.getElementById('intervention-group');
+      const interventiCheckboxes = document.getElementById('interventi-checkboxes');
       const interventionSelect = document.getElementById('intervention-select');
 
-      // Populate Intervention Dropdown & Single File Dropdown & Base Docs Checkboxes
+      const aicpeSelect = document.getElementById('aicpe-select');
+
+      // 1. TABS LOGIC
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          panels.forEach(p => p.classList.remove('active'));
+          
+          tab.classList.add('active');
+          document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+      });
+
+      // 2. BUILD UI DYNAMICALLY FROM config.js
       if (window.APP_CONFIG) {
-        // Collect all possible files for the single-file dropdown
-        const allFilesSet = new Set();
-        
-        if (window.APP_CONFIG.PDF_FILES) {
-          window.APP_CONFIG.PDF_FILES.forEach(f => {
-            allFilesSet.add(f)
-            
-            // Creazione checkbox per documenti base
+        // TAB 1: SCHEDE (Tutti i file di base selezionabili liberamente, spenti di default)
+        if (window.APP_CONFIG.SCHEDE_FILES) {
+          window.APP_CONFIG.SCHEDE_FILES.forEach(f => {
             const label = document.createElement('label');
             label.className = 'checkbox-wrapper';
             
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = f;
-            checkbox.className = 'base-doc-checkbox';
+            checkbox.className = 'tab1-checkbox';
             
-            // Check by default if it's one of the original 6 documents
+            const span = document.createElement('span');
+            span.className = 'checkbox-label-text';
+            span.textContent = f.replace('.pdf', '');
+            
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            schedeCheckboxes.appendChild(label);
+          });
+        }
+
+        // TAB 2: INTERVENTI (Documenti 1-6 spuntati di default, resto spento)
+        if (window.APP_CONFIG.PDF_FILES) {
+          window.APP_CONFIG.PDF_FILES.forEach(f => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-wrapper';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = f;
+            checkbox.className = 'tab2-checkbox';
+            
             if (f.startsWith('1 ') || f.startsWith('2 ') || f.startsWith('3 ') || 
                 f.startsWith('4 ') || f.startsWith('5 ') || f.startsWith('6 ')) {
                 checkbox.checked = true;
@@ -649,74 +854,81 @@
             
             const span = document.createElement('span');
             span.className = 'checkbox-label-text';
-            // Rimuovi l'estensione per pulizia estetica
             span.textContent = f.replace('.pdf', '');
             
             label.appendChild(checkbox);
             label.appendChild(span);
-            checkboxesContainer.appendChild(label);
+            interventiCheckboxes.appendChild(label);
           });
         }
-        if (window.APP_CONFIG.PROTESI_PDF) allFilesSet.add(window.APP_CONFIG.PROTESI_PDF);
-        if (window.APP_CONFIG.IBAN_PDF) allFilesSet.add(window.APP_CONFIG.IBAN_PDF);
-        if (window.APP_CONFIG.ANESTESIA_PDF) allFilesSet.add(window.APP_CONFIG.ANESTESIA_PDF);
 
+        // TAB 2 & 3: INTERVENTI AICPE DROPDOWNS
         if (window.APP_CONFIG.INTERVENTIONS) {
-          const interventions = Object.keys(window.APP_CONFIG.INTERVENTIONS).sort();
-          if (interventions.length > 0) {
-            interventionGroup.style.display = 'block';
-            interventions.forEach(name => {
-              // Add to intervention dropdown
-              const option = document.createElement('option');
-              option.value = window.APP_CONFIG.INTERVENTIONS[name];
-              option.textContent = name;
-              interventionSelect.appendChild(option);
-              
-              // Map intervention file for single select
-              allFilesSet.add(window.APP_CONFIG.INTERVENTIONS[name]);
-            });
-          }
+          const interventionsList = Object.keys(window.APP_CONFIG.INTERVENTIONS).sort();
+          interventionsList.forEach(name => {
+            // Dropdown per Tab 2
+            const opt1 = document.createElement('option');
+            opt1.value = window.APP_CONFIG.INTERVENTIONS[name];
+            opt1.textContent = name;
+            interventionSelect.appendChild(opt1);
+
+            // Dropdown per Tab 3
+            const opt2 = document.createElement('option');
+            opt2.value = window.APP_CONFIG.INTERVENTIONS[name];
+            opt2.textContent = name;
+            aicpeSelect.appendChild(opt2);
+          });
         }
-        
-        // Populate single file dropdown
-        const sortedFiles = Array.from(allFilesSet).sort();
-        sortedFiles.forEach(filename => {
-           const option = document.createElement('option');
-           option.value = filename;
-           option.textContent = filename;
-           singleFileSelect.appendChild(option);
-        });
+        // TAB 6: LIBERATORIE
+        const liberatorieCheckboxes = document.getElementById('liberatorie-checkboxes');
+        if (window.APP_CONFIG.LIBERATORIE_FILES) {
+          window.APP_CONFIG.LIBERATORIE_FILES.forEach(f => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-wrapper';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = f;
+            checkbox.className = 'tab6-checkbox';
+            const span = document.createElement('span');
+            span.className = 'checkbox-label-text';
+            span.textContent = f.replace('.pdf', '');
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            liberatorieCheckboxes.appendChild(label);
+          });
+        }
+
+        // TAB 7: CERTIFICATI
+        const certificatiCheckboxes = document.getElementById('certificati-checkboxes');
+        if (window.APP_CONFIG.CERTIFICATI_FILES) {
+          window.APP_CONFIG.CERTIFICATI_FILES.forEach(f => {
+            const label = document.createElement('label');
+            label.className = 'checkbox-wrapper';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = f;
+            checkbox.className = 'tab7-checkbox';
+            const span = document.createElement('span');
+            span.className = 'checkbox-label-text';
+            span.textContent = f.replace('.pdf', '');
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            certificatiCheckboxes.appendChild(label);
+          });
+        }
       }
 
-      // Handle UI feedback when a single file is selected
-      singleFileSelect.addEventListener('change', (e) => {
-        const isSingleFileSelected = e.target.value !== "";
-        if (isSingleFileSelected) {
-          packageSelectors.style.opacity = '0.3';
-          packageSelectors.style.pointerEvents = 'none';
-          interventionGroup.style.opacity = '0.3';
-          interventionSelect.disabled = true;
-          printBtn.innerHTML = `<span class="btn-icon">📄</span> Stampa File Singolo`;
-        } else {
-          packageSelectors.style.opacity = '1';
-          packageSelectors.style.pointerEvents = 'auto';
-          interventionGroup.style.opacity = '1';
-          interventionSelect.disabled = false;
-          printBtn.innerHTML = `<span class="btn-icon">🖨️</span> Genera e Stampa Documenti`;
-        }
-      });
-
-      // Handle Clinic Selection (disable Anesthesia for External)
+      // Handle Clinic Selection in TAB 2 (disable Anesthesia for External)
       clinicSelect.addEventListener('change', (e) => {
         const isExternal = e.target.value === 'external';
-        const checkboxes = document.querySelectorAll('.base-doc-checkbox');
+        const checkboxes = document.querySelectorAll('.tab2-checkbox');
         checkboxes.forEach(cb => {
             if (cb.value === window.APP_CONFIG.ANESTESIA_PDF) {
                 if (isExternal) {
-                    cb.checked = false; // Auto-uncheck
+                    cb.checked = false;
                     cb.parentElement.style.opacity = '0.5';
                 } else {
-                    cb.checked = true; // Auto-check when returning to COSMEDIC
+                    cb.checked = true;
                     cb.parentElement.style.opacity = '1';
                 }
             }
@@ -730,8 +942,9 @@
         if (type === 'success') statusEl.classList.add('status-success');
       }
 
+      // --- GENERATE AND PRINT ROUTINE ---
       printBtn.addEventListener('click', async () => {
-        if (!window.APP_CONFIG || !window.APP_CONFIG.PDF_FILES) {
+        if (!window.APP_CONFIG) {
           setStatus('Errore: config.js mancante o non valido.', 'error');
           progressContainer.classList.add('visible');
           return;
@@ -739,35 +952,30 @@
 
         let files = [];
         
-        // Modalità: Singolo File vs Intero Pacchetto
-        const singleFileTarget = singleFileSelect.value;
-        const isSingleFileMode = singleFileTarget !== "";
+        // Determina quale TAB è attualmente attiva per processare la logica giusta
+        const activeTab = document.querySelector('.tab-panel.active').id;
 
-        if (isSingleFileMode) {
-            files.push(singleFileTarget);
-        } else {
-            // -- Logica Pacchetto ---
-            
-            // Recupera file base solo se spuntati dall'utente
-            const checkboxes = document.querySelectorAll('.base-doc-checkbox');
-            checkboxes.forEach(cb => {
-              if (cb.checked) {
-                files.push(cb.value);
-              }
-            });
-            
+        if (activeTab === 'tab-schede') {
+            // Prende solo le schede selezionate liberamente
+            const selected = document.querySelectorAll('.tab1-checkbox:checked');
+            selected.forEach(cb => files.push(cb.value));
+
+        } else if (activeTab === 'tab-interventi') {
+            // Prende le schede base selezionate
+            const selected = document.querySelectorAll('.tab2-checkbox:checked');
+            selected.forEach(cb => files.push(cb.value));
+
             const isExternalClinic = clinicSelect.value === 'external';
 
-            // 1. Logica Sede Esterna (rimuovere anestesia per scurezza aggiuntiva, anche se disattivata in UI)
+            // Sicurezza aggiuntiva per rimuovere anestesia
             if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
               files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
             }
 
-            // 2. Handle specific interventions logic & Protesi
+            // Aggiungi Intervento e Protesi
             const selectedIntervention = interventionSelect.value;
             if (selectedIntervention) {
               files.push(selectedIntervention);
-
               const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
               if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
                 window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText) &&
@@ -776,10 +984,31 @@
               }
             }
 
-            // 3. Logica Sede Esterna (aggiungere IBAN in fondo)
+            // Aggiungi IBAN se in sede esterna
             if (isExternalClinic && window.APP_CONFIG.IBAN_PDF) {
               files.push(window.APP_CONFIG.IBAN_PDF);
             }
+
+        } else if (activeTab === 'tab-aicpe') {
+            // Prende solo il singolo consenso AICPE selezionato
+            if (aicpeSelect.value) {
+                files.push(aicpeSelect.value);
+            }
+
+        } else if (activeTab === 'tab-locale') {
+            // Logica Cablata per Interventi in Locale
+            files = [...(window.APP_CONFIG.INTERVENTI_LOCALE_FILES || [])];
+
+        } else if (activeTab === 'tab-advisor') {
+            // Logica Cablata per Advisor
+            files = [...(window.APP_CONFIG.ADVISOR_FILES || [])];
+        } else if (activeTab === 'tab-liberatorie') {
+            const selected = document.querySelectorAll('.tab6-checkbox:checked');
+            selected.forEach(cb => files.push(cb.value));
+
+        } else if (activeTab === 'tab-certificati') {
+            const selected = document.querySelectorAll('.tab7-checkbox:checked');
+            selected.forEach(cb => files.push(cb.value));
         }
 
         if (files.length === 0) {
@@ -789,6 +1018,7 @@
         }
 
         const totalFiles = files.length;
+        const isSingleFileMode = files.length === 1;
 
         // UI Feedback Start
         printBtn.disabled = true;
