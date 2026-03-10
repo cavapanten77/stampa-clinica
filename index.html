@@ -172,21 +172,24 @@
       margin-bottom: 36px;
     }
 
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
+    .logo-area {
+      display: flex;
       justify-content: center;
-      width: 120px;
-      height: 120px;
-      margin-bottom: 8px;
-      position: relative;
-      overflow: hidden;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 24px;
+      transition: transform 0.3s ease;
     }
 
-    .logo-badge img {
+    .logo-area:hover {
+      transform: scale(1.02);
+    }
+
+    .logo-area img {
       width: 100%;
-      height: 100%;
-      object-fit: contain;
+      max-width: 180px;
+      height: auto;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.05));
     }
 
     h1 {
@@ -646,7 +649,7 @@
   <!-- LEFT SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="logo-badge">
+      <div class="logo-area">
         <img src="logo cosmedic definitivo (1).png" alt="Cosmedic Logo">
       </div>
       <h1>Stampa <span class="gradient-text">Clinica</span></h1>
