@@ -1284,7 +1284,7 @@
           if (pazCognome || pazNome) {
             setStatus('Compilazione dati paziente nel documento...', 'info');
             const font     = await merged.embedFont(PDFLib.StandardFonts.Helvetica);
-            const fontSize = 9;
+            const fontSize = 10;
             const color    = PDFLib.rgb(0.05, 0.05, 0.05);
             const pages    = merged.getPages();
 
@@ -1301,8 +1301,8 @@
               ],
               // Scheda Anagrafica: "Cognome ___ Nome ___" — riga 1 dati
               '0 SCHEDA ANAGRAFICA 2026.pdf': [
-                [pazCognome,  90, 103],
-                [pazNome,    370, 103],
+                [pazCognome,  88, 103],
+                [pazNome,    360, 103],
               ],
               // Dichiarazione / consenso con "Il/La sottoscritto/a ___" — riga 1
               '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': [
