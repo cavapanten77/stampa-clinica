@@ -43,9 +43,9 @@ window.APP_CONFIG = {
 
     // Categoria: CERTIFICATI
     CERTIFICATI_FILES: [
-        'Certficato  lavoro per visita contr.pdf',
-        'certificato lavoro dipendenti.pdf',
-        'Certificato Lavoro per Intervento.pdf'
+        'CERTIFICATO LAVORO DIPENDENTI.pdf',
+        'CERTIFICATO LAVORO VISITA CONTROLLO.pdf',
+        'CERTIFICATO LAVORO X INTERV..pdf'
     ],
 
     // Categoria: INTERVENTI IN LOCALE
