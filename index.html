@@ -640,7 +640,12 @@
             checkbox.type = 'checkbox';
             checkbox.value = f;
             checkbox.className = 'base-doc-checkbox';
-            // unchecked by default as per user request
+            
+            // Check by default if it's one of the original 6 documents
+            if (f.startsWith('1 ') || f.startsWith('2 ') || f.startsWith('3 ') || 
+                f.startsWith('4 ') || f.startsWith('5 ') || f.startsWith('6 ')) {
+                checkbox.checked = true;
+            }
             
             const span = document.createElement('span');
             span.className = 'checkbox-label-text';
@@ -701,6 +706,23 @@
         }
       });
 
+      // Handle Clinic Selection (disable Anesthesia for External)
+      clinicSelect.addEventListener('change', (e) => {
+        const isExternal = e.target.value === 'external';
+        const checkboxes = document.querySelectorAll('.base-doc-checkbox');
+        checkboxes.forEach(cb => {
+            if (cb.value === window.APP_CONFIG.ANESTESIA_PDF) {
+                if (isExternal) {
+                    cb.checked = false; // Auto-uncheck
+                    cb.parentElement.style.opacity = '0.5';
+                } else {
+                    cb.checked = true; // Auto-check when returning to COSMEDIC
+                    cb.parentElement.style.opacity = '1';
+                }
+            }
+        });
+      });
+
       function setStatus(msg, type = 'info') {
         statusEl.textContent = msg;
         statusEl.className = '';
@@ -736,7 +758,7 @@
             
             const isExternalClinic = clinicSelect.value === 'external';
 
-            // 1. Logica Sede Esterna (rimuovere anestesia)
+            // 1. Logica Sede Esterna (rimuovere anestesia per scurezza aggiuntiva, anche se disattivata in UI)
             if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
               files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
             }
