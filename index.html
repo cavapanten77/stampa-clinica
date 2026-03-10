@@ -1277,72 +1277,75 @@
             progressFill.style.width = `${Math.round(done / totalFiles * 100)}%`;
           }
 
-          // --- OVERLAY DATI PAZIENTE ---
-          const pazData = {
-            cognome:       document.getElementById('paz-cognome').value.trim(),
-            nome:          document.getElementById('paz-nome').value.trim(),
-            sesso:         document.getElementById('paz-sesso').value.trim(),
-            dataNascita:   document.getElementById('paz-data-nascita').value.trim(),
-            luogoNascita:  document.getElementById('paz-luogo-nascita').value.trim(),
-            citta:         document.getElementById('paz-citta').value.trim(),
-            diagnosi:      document.getElementById('paz-diagnosi').value.trim(),
-            intervento:    document.getElementById('paz-intervento').value.trim(),
-            dataIntervento: document.getElementById('paz-data-intervento').value.trim()
-          };
+          // --- OVERLAY DATI PAZIENTE (per-documento) ---
+          const pazCognome = document.getElementById('paz-cognome').value.trim();
+          const pazNome    = document.getElementById('paz-nome').value.trim();
 
-          const hasPazData = Object.values(pazData).some(v => v !== '');
-          if (hasPazData) {
+          if (pazCognome || pazNome) {
             setStatus('Compilazione dati paziente nel documento...', 'info');
-            const font = await merged.embedFont(PDFLib.StandardFonts.Helvetica);
+            const font     = await merged.embedFont(PDFLib.StandardFonts.Helvetica);
             const fontSize = 9;
-            const color = PDFLib.rgb(0.05, 0.05, 0.05);
-            const pages = merged.getPages();
+            const color    = PDFLib.rgb(0.05, 0.05, 0.05);
+            const pages    = merged.getPages();
 
-            // Find the page that contains cartella clinica (first page by default, or search)
-            // We look for the page index in the merge that corresponds to '1 cartella clinica.pdf'
-            let cartellaPagesStart = 0; // default to first page
-            let pagesTraversed = 0;
-            for (const filename of files) {
-              if (filename === '1 cartella clinica.pdf') {
-                cartellaPagesStart = pagesTraversed;
-                break;
-              }
-              // Account for single-sided padding
-              const isDS = window.APP_CONFIG.DOUBLE_SIDED_FILES && window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
-              if (!isSingleFileMode && !isDS) {
-                // Each page gets a blank page too — but we fetched the pdf earlier, can't recount here
-                // Approximate: just go by 2x (each page has a blank after)
-                pagesTraversed += 2; // rough estimate for 1-page docs
-              } else {
-                pagesTraversed += 2;
-              }
-            }
-
-            const p = pages[Math.min(cartellaPagesStart, pages.length - 1)];
-            const { height } = p.getSize();
-
-            const draw = (text, x, y) => {
-              if (text) p.drawText(text, { x, y: height - y, size: fontSize, font, color });
+            // =========================================================
+            // PER_DOC_COORDS — Nome + Cognome per ogni documento
+            // Format: filename → [[fieldValue, x, y], ...]
+            // y is measured from top; pdf-lib converts to height-y internally
+            // CALIBRATED: Cartella Clinica ✓  — Others: initial estimates
+            // =========================================================
+            const PER_DOC_COORDS = {
+              '1 cartella clinica.pdf': [
+                [pazCognome, 107, 160],  // Cognome ✓
+                [pazNome,    388, 160],  // Nome    ✓
+              ],
+              '0 SCHEDA ANAGRAFICA 2026.pdf': [
+                [pazCognome,  90, 132],  // Cognome — TBD
+                [pazNome,    380, 132],  // Nome    — TBD
+              ],
+              '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': [
+                [pazCognome,  90, 132],
+                [pazNome,    380, 132],
+              ],
+              '3 Consenso Generico .pdf': [
+                [pazCognome,  90, 132],
+                [pazNome,    380, 132],
+              ],
+              '4 Lettera Dimissioni Pazienti.pdf': [
+                [pazCognome,  90, 132],
+                [pazNome,    380, 132],
+              ],
+              '5 Ricetta PRESCRIZIONE medica dimissione.pdf': [
+                [pazCognome,  90, 132],
+                [pazNome,    380, 132],
+              ],
+              '6 Tabella Medicazioni.pdf': [
+                [pazCognome,  90, 132],
+                [pazNome,    380, 132],
+              ],
             };
 
-            // =====================================================
-            // COORDINATE OVERLAY — "1 cartella clinica.pdf"
-            // Format: [fieldKey, x, y]  (y measured from top, pdf-lib inverts to height-y)
-            // CALIBRATED: 2026-03-11 ✓
-            // =====================================================
-            const CARTELLA_COORDS = [
-              ['cognome',        107, 160],  // Cognome
-              ['nome',           388, 160],  // Nome
-              ['sesso',          522, 160],  // Sesso M/F
-              ['luogoNascita',   185, 177],  // Luogo di nascita
-              ['dataNascita',    248, 177],  // Data di nascita
-              ['citta',          440, 177],  // Città
-              ['diagnosi',       100, 213],  // Diagnosi
-              ['intervento',     185, 233],  // Intervento proposto
-              ['dataIntervento', 430, 248],  // Data intervento
-            ];
-            CARTELLA_COORDS.forEach(([key, x, y]) => draw(pazData[key], x, y));
+            // Walk through the files array and track starting page for each doc
+            let pageOffset = 0;
+            for (const filename of files) {
+              const coords = PER_DOC_COORDS[filename];
+              if (coords) {
+                const pageIdx = Math.min(pageOffset, pages.length - 1);
+                const p = pages[pageIdx];
+                const { height } = p.getSize();
+                coords.forEach(([text, x, y]) => {
+                  if (text) p.drawText(text, { x, y: height - y, size: fontSize, font, color });
+                });
+              }
+              // Advance offset: double-sided docs keep their page count; single-sided get blank pages paired
+              const isDS = window.APP_CONFIG.DOUBLE_SIDED_FILES &&
+                           window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+              // We can't know exact page count here without re-loading the PDF,
+              // so we use 2 as the step (works for all 1-2 page docs; adjust if needed)
+              pageOffset += 2;
+            }
           }
+
 
           setStatus('Assemblaggio del documento finale...', 'info');
           const mergedBytes = await merged.save();
