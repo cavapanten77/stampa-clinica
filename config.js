@@ -43,7 +43,7 @@ window.APP_CONFIG = {
 
     // Categoria: CERTIFICATI
     CERTIFICATI_FILES: [
-        'Certficato lavoro per visita contr.pdf',
+        'Certficato  lavoro per visita contr.pdf',
         'certificato lavoro dipendenti.pdf',
         'Certificato Lavoro per Intervento.pdf'
     ],
@@ -108,7 +108,7 @@ window.APP_CONFIG = {
         'CERTIFICATO.pdf',
         'CONSENSO BTX-IAL.pdf',
         'CONSENSO MINORENNI.pdf',
-        'FAP_MODULO_POLITECH.pdf',
+        'MODULO POLITECH.pdf',
         'ADDOMINOPLASTICA.pdf',
         'BLEFAROPLASTICA.pdf',
         'LIFTING_DEL_VISO.pdf',
