@@ -146,6 +146,7 @@
       opacity: 0;
       animation: fadeUp 0.8s 0.1s forwards cubic-bezier(0.16, 1, 0.3, 1);
       overflow-y: auto;
+      position: relative;
     }
 
     /* MAIN CONTENT AREA */
@@ -626,7 +627,7 @@
       border-left: 4px solid var(--accent-secondary);
     }
 
-    /* PATIENT DATA PANEL */
+    /* PATIENT DATA OVERLAY */
     .dati-paziente-toggle {
       width: 100%;
       text-align: left;
@@ -644,8 +645,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0;
+      margin-bottom: 8px;
       transition: all 0.2s ease;
+      flex-shrink: 0;
     }
 
     .dati-paziente-toggle:hover {
@@ -661,23 +663,68 @@
       transform: rotate(180deg);
     }
 
-    .dati-paziente-panel {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.4s ease, margin 0.2s ease;
-      margin-bottom: 0;
+    /* OVERLAY that slides over the sidebar content */
+    .dati-paziente-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 100;
+      transform: translateX(-110%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+      border-right: 1px solid rgba(0,0,0,0.12);
     }
 
-    .dati-paziente-panel.open {
-      max-height: 600px;
-      margin-bottom: 14px;
+    .dati-paziente-overlay.open {
+      transform: translateX(0);
+    }
+
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(37, 99, 235, 0.15);
+    }
+
+    .overlay-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--accent-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .overlay-close {
+      background: rgba(0,0,0,0.06);
+      border: 2.2px solid rgba(0,0,0,0.15);
+      border-radius: 8px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .overlay-close:hover {
+      background: rgba(0,0,0,0.1);
+      color: var(--text-main);
     }
 
     .dati-paziente-inner {
-      padding: 10px 4px 4px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
     }
 
     .dati-input-group {
@@ -706,6 +753,7 @@
       font-size: 0.8rem;
       outline: none;
       transition: border-color 0.2s ease;
+      box-sizing: border-box;
     }
 
     .dati-input:focus {
@@ -716,7 +764,7 @@
     .dati-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
+      gap: 8px;
     }
 
     /* Bottom action bar */
@@ -748,12 +796,12 @@
       <p class="subtitle">Cosmedic SRL</p>
     </div>
 
-    <!-- DATI PAZIENTE COLLAPSIBLE -->
-    <button class="dati-paziente-toggle" id="dati-paziente-toggle">
-      <span>🧑‍⚕️ Dati Paziente</span>
-      <i class="toggle-arrow">▾</i>
-    </button>
-    <div class="dati-paziente-panel" id="dati-paziente-panel">
+    <!-- DATI PAZIENTE OVERLAY -->
+    <div class="dati-paziente-overlay" id="dati-paziente-overlay">
+      <div class="overlay-header">
+        <span class="overlay-title">🧑‍⚕️ Dati Paziente</span>
+        <button class="overlay-close" id="dati-paziente-close">✕ Chiudi</button>
+      </div>
       <div class="dati-paziente-inner">
         <div class="dati-row">
           <div class="dati-input-group">
@@ -934,12 +982,19 @@
 
       const aicpeSelect = document.getElementById('aicpe-select');
 
-      // --- DATI PAZIENTE TOGGLE ---
+      // --- DATI PAZIENTE OVERLAY ---
       const dpToggle = document.getElementById('dati-paziente-toggle');
-      const dpPanel = document.getElementById('dati-paziente-panel');
+      const dpOverlay = document.getElementById('dati-paziente-overlay');
+      const dpClose = document.getElementById('dati-paziente-close');
+
       dpToggle.addEventListener('click', () => {
-        dpToggle.classList.toggle('open');
-        dpPanel.classList.toggle('open');
+        dpToggle.classList.add('open');
+        dpOverlay.classList.add('open');
+      });
+
+      dpClose.addEventListener('click', () => {
+        dpToggle.classList.remove('open');
+        dpOverlay.classList.remove('open');
       });
 
       // 1. TABS LOGIC
