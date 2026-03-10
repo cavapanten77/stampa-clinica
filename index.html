@@ -1325,16 +1325,23 @@
               if (text) p.drawText(text, { x, y: height - y, size: fontSize, font, color });
             };
 
-            // Coordinates tuned to "1 cartella clinica.pdf" layout:
-            draw(pazData.cognome,        107, 160);
-            draw(pazData.nome,           388, 160);
-            draw(pazData.sesso,          522, 160);
-            draw(pazData.luogoNascita,   185, 177);   // Raised (y 184→177) + moved left (x 207→185)
-            draw(pazData.dataNascita,    248, 177);   // Moved left (x 300→248) to avoid Città label
-            draw(pazData.citta,          440, 177);   // Raised + moved left (x 468→440)
-            draw(pazData.diagnosi,       100, 213);
-            draw(pazData.intervento,     185, 233);
-            draw(pazData.dataIntervento, 430, 248);
+            // =====================================================
+            // COORDINATE OVERLAY — "1 cartella clinica.pdf"
+            // Format: [fieldKey, x, y]  (y measured from top, pdf-lib inverts to height-y)
+            // CALIBRATED: 2026-03-11 ✓
+            // =====================================================
+            const CARTELLA_COORDS = [
+              ['cognome',        107, 160],  // Cognome
+              ['nome',           388, 160],  // Nome
+              ['sesso',          522, 160],  // Sesso M/F
+              ['luogoNascita',   185, 177],  // Luogo di nascita
+              ['dataNascita',    248, 177],  // Data di nascita
+              ['citta',          440, 177],  // Città
+              ['diagnosi',       100, 213],  // Diagnosi
+              ['intervento',     185, 233],  // Intervento proposto
+              ['dataIntervento', 430, 248],  // Data intervento
+            ];
+            CARTELLA_COORDS.forEach(([key, x, y]) => draw(pazData[key], x, y));
           }
 
           setStatus('Assemblaggio del documento finale...', 'info');
