@@ -456,6 +456,78 @@
       z-index: 10;
       letter-spacing: 0.5px;
     }
+
+    /* CHECKBOX GRID FOR BASE DOCS */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    /* CUSTOM CHECKBOX */
+    .checkbox-wrapper {
+      display: flex;
+      align-items: flex-start;
+      cursor: pointer;
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-wrapper:hover {
+      background: rgba(0, 0, 0, 0.35);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      min-width: 20px;
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .checkbox-wrapper input[type="checkbox"]::after {
+      content: '✓';
+      font-family: inherit;
+      color: white;
+      font-size: 14px;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    }
+
+    .checkbox-wrapper input[type="checkbox"]:checked::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .checkbox-label-text {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      line-height: 1.3;
+      user-select: none;
+    }
   </style>
 </head>
 
@@ -489,16 +561,25 @@
 
       <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
 
-      <!-- Sede dell'intervento -->
-      <div class="form-group" id="clinic-group">
-        <label class="form-label" for="clinic-select">Sede Intervento</label>
-        <div class="select-wrapper">
-          <select id="clinic-select">
-            <option value="cosmedic">Studio COSMEDIC (Standard)</option>
-            <option value="external">Altre Cliniche (Rimuove Anestesia, Aggiunge IBAN)</option>
-          </select>
+      <div id="package-selectors">
+        <!-- Documenti Base -->
+        <div class="form-group" id="base-docs-group">
+          <label class="form-label">Documenti Base</label>
+          <div id="checkboxes-container" class="checkbox-grid">
+            <!-- Injected Checkboxes -->
+          </div>
         </div>
-      </div>
+
+        <!-- Sede dell'intervento -->
+        <div class="form-group" id="clinic-group">
+          <label class="form-label" for="clinic-select">Sede Intervento</label>
+          <div class="select-wrapper">
+            <select id="clinic-select">
+              <option value="cosmedic">Studio COSMEDIC (Standard)</option>
+              <option value="external">Altre Cliniche (Rimuove Anestesia, Aggiunge IBAN)</option>
+            </select>
+          </div>
+        </div>
 
       <!-- Intervento Specifico -->
       <div class="form-group" id="intervention-group" style="display:none;">
@@ -534,18 +615,42 @@
       const progressFill = document.getElementById('progress-fill');
       
       const singleFileSelect = document.getElementById('single-file-select');
-      const clinicGroup = document.getElementById('clinic-group');
+      
+      const packageSelectors = document.getElementById('package-selectors');
+      
+      const checkboxesContainer = document.getElementById('checkboxes-container');
       const clinicSelect = document.getElementById('clinic-select');
       const interventionGroup = document.getElementById('intervention-group');
       const interventionSelect = document.getElementById('intervention-select');
 
-      // Populate Intervention Dropdown & Single File Dropdown
+      // Populate Intervention Dropdown & Single File Dropdown & Base Docs Checkboxes
       if (window.APP_CONFIG) {
         // Collect all possible files for the single-file dropdown
         const allFilesSet = new Set();
         
         if (window.APP_CONFIG.PDF_FILES) {
-          window.APP_CONFIG.PDF_FILES.forEach(f => allFilesSet.add(f));
+          window.APP_CONFIG.PDF_FILES.forEach(f => {
+            allFilesSet.add(f)
+            
+            // Creazione checkbox per documenti base
+            const label = document.createElement('label');
+            label.className = 'checkbox-wrapper';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = f;
+            checkbox.className = 'base-doc-checkbox';
+            // unchecked by default as per user request
+            
+            const span = document.createElement('span');
+            span.className = 'checkbox-label-text';
+            // Rimuovi l'estensione per pulizia estetica
+            span.textContent = f.replace('.pdf', '');
+            
+            label.appendChild(checkbox);
+            label.appendChild(span);
+            checkboxesContainer.appendChild(label);
+          });
         }
         if (window.APP_CONFIG.PROTESI_PDF) allFilesSet.add(window.APP_CONFIG.PROTESI_PDF);
         if (window.APP_CONFIG.IBAN_PDF) allFilesSet.add(window.APP_CONFIG.IBAN_PDF);
@@ -582,14 +687,14 @@
       singleFileSelect.addEventListener('change', (e) => {
         const isSingleFileSelected = e.target.value !== "";
         if (isSingleFileSelected) {
-          clinicGroup.style.opacity = '0.3';
-          clinicSelect.disabled = true;
+          packageSelectors.style.opacity = '0.3';
+          packageSelectors.style.pointerEvents = 'none';
           interventionGroup.style.opacity = '0.3';
           interventionSelect.disabled = true;
           printBtn.innerHTML = `<span class="btn-icon">📄</span> Stampa File Singolo`;
         } else {
-          clinicGroup.style.opacity = '1';
-          clinicSelect.disabled = false;
+          packageSelectors.style.opacity = '1';
+          packageSelectors.style.pointerEvents = 'auto';
           interventionGroup.style.opacity = '1';
           interventionSelect.disabled = false;
           printBtn.innerHTML = `<span class="btn-icon">🖨️</span> Genera e Stampa Documenti`;
@@ -620,7 +725,15 @@
             files.push(singleFileTarget);
         } else {
             // -- Logica Pacchetto ---
-            files = [...window.APP_CONFIG.PDF_FILES];
+            
+            // Recupera file base solo se spuntati dall'utente
+            const checkboxes = document.querySelectorAll('.base-doc-checkbox');
+            checkboxes.forEach(cb => {
+              if (cb.checked) {
+                files.push(cb.value);
+              }
+            });
+            
             const isExternalClinic = clinicSelect.value === 'external';
 
             // 1. Logica Sede Esterna (rimuovere anestesia)

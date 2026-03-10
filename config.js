@@ -1,14 +1,18 @@
 window.APP_CONFIG = {
     SUPABASE_URL: 'https://taymnjarlmjkdrjhqkhx.supabase.co',
     BUCKET: 'cartella-clinica',
-    // I 6 PDF base da unire sempre, nel giusto ordine
+    // I documenti base disponibili per la selezione (ora tramite checkbox)
     PDF_FILES: [
+        '0 SCHEDA ANAGRAFICA 2026.pdf',
         '1 cartella clinica.pdf',
         '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
         '3 Consenso Generico .pdf',
         '4 Lettera Dimissioni Pazienti.pdf',
         '5 Ricetta PRESCRIZIONE medica dimissione.pdf',
-        '6 Tabella Medicazioni.pdf'
+        '6 Tabella Medicazioni.pdf',
+        'TABELLA X SCHEDE INTERVENTI.pdf',
+        'CONSENSO BTX-IAL.pdf',
+        'CONSENSO MINORENNI.pdf'
     ],
 
     // I consensi specifici associati agli interventi
@@ -50,9 +54,12 @@ window.APP_CONFIG = {
     // Elenco esatto dei file che DEVONO essere stampati fronte-retro.
     // Gli altri file non in questa lista avranno pagine bianche inserite per forzare la stampa solo fronte.
     DOUBLE_SIDED_FILES: [
+        '0 SCHEDA ANAGRAFICA 2026.pdf',
         '1 cartella clinica.pdf',
         '2 consenso anestesia, liberatoria, richiesta cart clin.pdf',
         '3 Consenso Generico .pdf',
+        'CONSENSO BTX-IAL.pdf',
+        'CONSENSO MINORENNI.pdf',
         'FAP_MODULO_POLITECH.pdf',
         'ADDOMINOPLASTICA.pdf',
         'BLEFAROPLASTICA.pdf',
