@@ -83,8 +83,11 @@ window.APP_CONFIG = {
         'Mastopessi e Mastoplastica Additiva'
     ],
 
-    // Nome esatto del file del modulo Protesi
+    // Nome esatto del file del modulo Protesi (Base)
     PROTESI_PDF: 'MODULO POLITECH.pdf',
+
+    // Nome esatto del file del modulo Protesi specifico per Interventi
+    PROTESI_INTERVENTI_PDF: 'MODULO POLITECH X INTERVENTI.pdf',
 
     // --- NUOVA LOGICA "ALTRE CLINICHE" ---
 
@@ -108,6 +111,7 @@ window.APP_CONFIG = {
         'CONSENSO BTX-IAL.pdf',
         'CONSENSO MINORENNI.pdf',
         'MODULO POLITECH.pdf',
+        'MODULO POLITECH X INTERVENTI.pdf',
         'ADDOMINOPLASTICA.pdf',
         'BLEFAROPLASTICA.pdf',
         'LIFTING_DEL_VISO.pdf',
