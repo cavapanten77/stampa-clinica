@@ -1224,6 +1224,15 @@
           const selectedIntervention = interventionSelect.value;
           if (selectedIntervention && !files.includes(selectedIntervention)) {
             files.push(selectedIntervention);
+            
+            // Aggiungi Protesi specifica per interventi se necessario
+            const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
+            if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI && 
+                window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText)) {
+              if (window.APP_CONFIG.PROTESI_INTERVENTI_PDF && !files.includes(window.APP_CONFIG.PROTESI_INTERVENTI_PDF)) {
+                files.push(window.APP_CONFIG.PROTESI_INTERVENTI_PDF);
+              }
+            }
           }
           // Aggiungi IBAN se in sede esterna (se non è già tra i checkbox)
           const isExternalClinic = clinicSelect.value === 'external';
