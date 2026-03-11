@@ -909,18 +909,18 @@
               </select>
             </div>
           </div>
-          <div class="form-group" id="base-docs-group">
-            <label class="form-label">Documenti Base</label>
-            <div id="interventi-checkboxes" class="checkbox-grid">
-              <!-- Injected Checkboxes -->
-            </div>
-          </div>
           <div class="form-group" id="intervention-group">
             <label class="form-label" for="intervention-select">Intervento Specifico</label>
             <div class="select-wrapper">
               <select id="intervention-select">
                 <option value="">Nessun intervento specifico selezionato...</option>
               </select>
+            </div>
+          </div>
+          <div class="form-group" id="base-docs-group">
+            <label class="form-label">Documenti Base</label>
+            <div id="interventi-checkboxes" class="checkbox-grid">
+              <!-- Injected Checkboxes -->
             </div>
           </div>
         </div>
@@ -1135,6 +1135,41 @@
         }
       }
 
+      // Handle Intervention Selection in TAB 2 (Auto-select docs)
+      interventionSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        const checkboxes = document.querySelectorAll('.tab2-checkbox');
+        
+        // Reset checkboxes to default state based on clinic
+        const isExternal = clinicSelect.value === 'external';
+        checkboxes.forEach(cb => {
+          if (cb.value.startsWith('1 ') || cb.value.startsWith('2 ') || cb.value.startsWith('3 ') || 
+              cb.value.startsWith('4 ') || cb.value.startsWith('5 ') || cb.value.startsWith('6 ')) {
+              cb.checked = true;
+          } else {
+              cb.checked = false;
+          }
+          
+          if (cb.value === window.APP_CONFIG.ANESTESIA_PDF && isExternal) {
+              cb.checked = false;
+          }
+          if (cb.value === window.APP_CONFIG.IBAN_PDF && isExternal) {
+              cb.checked = true;
+          }
+        });
+
+        // Add additional logic if needed for specific interventions
+        if (val) {
+          const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
+          if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
+              window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText)) {
+            checkboxes.forEach(cb => {
+              if (cb.value === window.APP_CONFIG.PROTESI_PDF) cb.checked = true;
+            });
+          }
+        }
+      });
+
       // Handle Clinic Selection in TAB 2 (disable Anesthesia for External)
       clinicSelect.addEventListener('change', (e) => {
         const isExternal = e.target.value === 'external';
@@ -1148,6 +1183,9 @@
               cb.checked = true;
               cb.parentElement.style.opacity = '1';
             }
+          }
+          if (cb.value === window.APP_CONFIG.IBAN_PDF) {
+            cb.checked = isExternal;
           }
         });
       });
@@ -1178,33 +1216,20 @@
           selected.forEach(cb => files.push(cb.value));
 
         } else if (activeTab === 'tab-interventi') {
-          // Prende le schede base selezionate
-          const selected = document.querySelectorAll('.tab2-checkbox:checked');
-          selected.forEach(cb => files.push(cb.value));
+            // Prende solo le schede base selezionate dai checkbox (che ora includono intervento e protesi se selezionati)
+            const selected = document.querySelectorAll('.tab2-checkbox:checked');
+            selected.forEach(cb => files.push(cb.value));
 
-          const isExternalClinic = clinicSelect.value === 'external';
-
-          // Sicurezza aggiuntiva per rimuovere anestesia
-          if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
-            files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
-          }
-
-          // Aggiungi Intervento e Protesi
-          const selectedIntervention = interventionSelect.value;
-          if (selectedIntervention) {
-            files.push(selectedIntervention);
-            const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
-            if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
-              window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText) &&
-              window.APP_CONFIG.PROTESI_PDF) {
-              files.push(window.APP_CONFIG.PROTESI_PDF);
+            // Aggiungi Intervento Specifico se selezionato (se non è già tra i checkbox, ma lo iniettiamo ora)
+            const selectedIntervention = interventionSelect.value;
+            if (selectedIntervention && !files.includes(selectedIntervention)) {
+              files.push(selectedIntervention);
             }
-          }
-
-          // Aggiungi IBAN se in sede esterna
-          if (isExternalClinic && window.APP_CONFIG.IBAN_PDF) {
-            files.push(window.APP_CONFIG.IBAN_PDF);
-          }
+            // Aggiungi IBAN se in sede esterna (se non è già tra i checkbox)
+            const isExternalClinic = clinicSelect.value === 'external';
+            if (isExternalClinic && window.APP_CONFIG.IBAN_PDF && !files.includes(window.APP_CONFIG.IBAN_PDF)) {
+              files.push(window.APP_CONFIG.IBAN_PDF);
+            }
 
         } else if (activeTab === 'tab-aicpe') {
           // Prende solo il singolo consenso AICPE selezionato
