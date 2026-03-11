@@ -1331,7 +1331,7 @@
 
             // =========================================================
             // PER_DOC_COORDS — Nome + Cognome per ogni documento
-            // Format: filename → [[fieldValue, x, y], ...]
+            // Format: filename → { pageIndexRelative: [[fieldValue, x, y], ...], ... }
             // y is measured from top; pdf-lib converts to height-y internally
             // CALIBRATED: Cartella Clinica ✓  — Others: initial estimates
             // =========================================================
@@ -1340,61 +1340,89 @@
 
             const PER_DOC_COORDS = {
               // ✓ CARTELLA CLINICA: campi separati (Cognome, Nome)
-              '1 cartella clinica.pdf': [
-                [pazCognome, 107, 160],
-                [pazNome, 388, 160],
-              ],
+              '1 cartella clinica.pdf': {
+                0: [[pazCognome, 107, 160], [pazNome, 388, 160]]
+              },
               // ✓ SCHEDA ANAGRAFICA: campi separati (Cognome, Nome)
-              '0 SCHEDA ANAGRAFICA 2026.pdf': [
-                [pazCognome, 93, 100],
-                [pazNome, 329, 100],
-              ],
+              '0 SCHEDA ANAGRAFICA 2026.pdf': {
+                0: [[pazCognome, 93, 100], [pazNome, 329, 100]]
+              },
               // -- Moduli con campo unico "Il/La sottoscritto/a" o "Io Sottoscritto/a" --
-              '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': [
-                [fullName, 150, 105],
-              ],
-              '3 Consenso Generico .pdf': [
-                [fullName, 180, 220],  // centrato meglio sulla riga punteggiata
-              ],
-              '4 Lettera Dimissioni Pazienti.pdf': [
-                [fullName, 285, 142],  // spostato ancora a dx (255→285)
-              ],
-              '5 Ricetta PRESCRIZIONE medica dimissione.pdf': [
-                [fullName, 172, 219],
-              ],
-              '6 Tabella Medicazioni.pdf': [
-                [fullName, 150, 83],  // alzato di 20pt (103→83)
-              ],
+              '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': {
+                0: [[fullName, 150, 105]],
+                1: [[fullName, 150, 105]] // Applichiamo alla pagina 2 (stessa stima coordinate)
+              },
+              '3 Consenso Generico .pdf': {
+                0: [[fullName, 180, 220]]
+              },
+              '4 Lettera Dimissioni Pazienti.pdf': {
+                0: [[fullName, 285, 142]]
+              },
+              '5 Ricetta PRESCRIZIONE medica dimissione.pdf': {
+                0: [[fullName, 172, 219]]
+              },
+              '6 Tabella Medicazioni.pdf': {
+                0: [[fullName, 150, 83]]
+              },
               // --- MODULI INTERVENTO (AICPE) ---
-              'ADDOMINOPLASTICA.pdf': [[fullName, 190, 218]],
-              'BLEFAROPLASTICA.pdf': [[fullName, 190, 218]],
-              'CERTIFICATO INT.MINORI NEW.pdf': [[fullName, 180, 220]],
-              'LIFTING_DEL_VISO.pdf': [[fullName, 165, 198]],
-              'LIPOSUZIONE.pdf': [[fullName, 180, 205]],
-              'MASTOPLASTICA ADDITIVA.pdf': [[fullName, 188, 174]],
-              'MASTOPLASTICA RIDUTTIVA.pdf': [[fullName, 180, 205]],
-              'OTOPLASTICA.pdf': [[fullName, 188, 183]],
-              'RINOPLASTICA.pdf': [[fullName, 173, 159]],
+              'ADDOMINOPLASTICA.pdf': { 0: [[fullName, 190, 218]] },
+              'BLEFAROPLASTICA.pdf': { 0: [[fullName, 190, 218]] },
+              'CERTIFICATO INT.MINORI NEW.pdf': { 0: [[fullName, 180, 220]] },
+              'LIFTING_DEL_VISO.pdf': { 0: [[fullName, 170, 185]] },
+              'LIPOSUZIONE.pdf': { 0: [[fullName, 180, 205]] },
+              'MASTOPLASTICA ADDITIVA.pdf': { 0: [[fullName, 188, 174]] },
+              'MASTOPLASTICA RIDUTTIVA.pdf': { 0: [[fullName, 180, 205]] },
+              'OTOPLASTICA.pdf': { 0: [[fullName, 188, 195]] },
+              'RINOPLASTICA.pdf': { 0: [[fullName, 177, 185]] },
             };
 
             // Walk through the files array and track starting page for each doc
-            let pageOffset = 0;
+            let currentPageIdx = 0;
+            const finalPages = merged.getPages();
+
             for (const filename of files) {
-              const coords = PER_DOC_COORDS[filename];
-              if (coords) {
-                const pageIdx = Math.min(pageOffset, pages.length - 1);
-                const p = pages[pageIdx];
-                const { height } = p.getSize();
-                coords.forEach(([text, x, y]) => {
-                  if (text) p.drawText(text, { x, y: height - y, size: fontSize, font, color });
+              const docConfig = PER_DOC_COORDS[filename];
+              if (docConfig) {
+                // docConfig è un oggetto { pageOffsetRelativo: [[testo, x, y], ...] }
+                Object.keys(docConfig).forEach(relIdx => {
+                  const targetPageIdx = currentPageIdx + parseInt(relIdx);
+                  if (targetPageIdx < finalPages.length) {
+                    const p = finalPages[targetPageIdx];
+                    const { height } = p.getSize();
+                    docConfig[relIdx].forEach(([text, x, y]) => {
+                      if (text) p.drawText(text, { x, y: height - y, size: fontSize, font, color });
+                    });
+                  }
                 });
               }
-              // Advance offset: double-sided docs keep their page count; single-sided get blank pages paired
+
+              // Determina quante pagine occupa questo documento nel pacchetto finale
               const isDS = window.APP_CONFIG.DOUBLE_SIDED_FILES &&
-                window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
-              // We can't know exact page count here without re-loading the PDF,
-              // so we use 2 as the step (works for all 1-2 page docs; adjust if needed)
-              pageOffset += 2;
+                           window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+              
+              // Logica identica a quella usata nel merge per saltare le pagine corrette
+              // Se single-sided, ogni pagina originale è seguita da una bianca.
+              // Se double-sided o single-file, le pagine sono consecutive.
+              // Carichiamo il PDF temporaneamente per sapere il conteggio pagine reale:
+              const url = `${window.APP_CONFIG.SUPABASE_URL}/storage/v1/object/public/${window.APP_CONFIG.BUCKET}/${encodeURIComponent(filename)}`;
+              const resp = await fetch(url);
+              const bytes = await resp.arrayBuffer();
+              const tempPdf = await PDFLib.PDFDocument.load(bytes);
+              const originalPageCount = tempPdf.getPageCount();
+
+              if (!isSingleFileMode && !isDS) {
+                // Solo Fronte (Modalità Pacchetto): Ogni pagina reale + una bianca
+                currentPageIdx += (originalPageCount * 2);
+              } else {
+                // Fronte/Retro o Singolo File: Pagine consecutive
+                currentPageIdx += originalPageCount;
+              }
+
+              // Se non siamo all'ultimo file, il merge aggiunge una pagina bianca se siamo su un retro (riga 1252)
+              // Questo accade solo in modalità pacchetto (non singleFileMode)
+              if (!isSingleFileMode && filename !== files[files.length - 1] && currentPageIdx % 2 !== 0) {
+                currentPageIdx += 1; // Pagina bianca aggiunta per forzare il fronte del prossimo doc
+              }
             }
           }
 
