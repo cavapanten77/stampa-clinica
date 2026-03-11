@@ -34,7 +34,7 @@
       --glass-shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.15);
 
       /* Accents */
-      --accent-primary: #2563EB; 
+      --accent-primary: #2563EB;
       --accent-secondary: #7C3AED;
       --accent-tertiary: #DB2777;
 
@@ -43,15 +43,17 @@
       --error: #DC2626;
 
       /* Text */
-      --text-main: #020617; /* Even deeper slate for maximum readability */
-      --text-muted: #334155; 
+      --text-main: #020617;
+      /* Even deeper slate for maximum readability */
+      --text-muted: #334155;
 
       /* Typography */
       --font-display: 'Outfit', sans-serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       overflow: hidden;
     }
@@ -163,8 +165,15 @@
     }
 
     @keyframes fadeUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* SIDEBAR HEADER */
@@ -238,7 +247,10 @@
     .glass-card::before {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: linear-gradient(180deg, var(--glass-highlight) 0%, rgba(255, 255, 255, 0) 100%);
       pointer-events: none;
       border-radius: inherit;
@@ -254,9 +266,11 @@
     .panel-scroll::-webkit-scrollbar {
       width: 4px;
     }
+
     .panel-scroll::-webkit-scrollbar-track {
       background: transparent;
     }
+
     .panel-scroll::-webkit-scrollbar-thumb {
       background: rgba(0, 0, 0, 0.1);
       border-radius: 999px;
@@ -680,7 +694,7 @@
       flex-direction: column;
       padding: 20px;
       overflow-y: auto;
-      border-right: 1px solid rgba(0,0,0,0.12);
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
     }
 
     .dati-paziente-overlay.open {
@@ -706,8 +720,8 @@
     }
 
     .overlay-close {
-      background: rgba(0,0,0,0.06);
-      border: 2.2px solid rgba(0,0,0,0.15);
+      background: rgba(0, 0, 0, 0.06);
+      border: 2.2px solid rgba(0, 0, 0, 0.15);
       border-radius: 8px;
       padding: 4px 10px;
       cursor: pointer;
@@ -717,7 +731,7 @@
     }
 
     .overlay-close:hover {
-      background: rgba(0,0,0,0.1);
+      background: rgba(0, 0, 0, 0.1);
       color: var(--text-main);
     }
 
@@ -928,14 +942,16 @@
         <div id="tab-locale" class="tab-panel">
           <h2 class="panel-title">🏠 Interventi in Locale</h2>
           <p class="panel-desc">Questa sezione genera automaticamente un pacchetto contenente esclusivamente:<br>
-          <strong>3 Consenso Generico, 6 Tabella Medicazioni, 7 Chirurgia ambulatoriale</strong>.</p>
+            <strong>3 Consenso Generico, 6 Tabella Medicazioni, 7 Chirurgia ambulatoriale</strong>.
+          </p>
         </div>
 
         <!-- TAB 5: ADVISOR -->
         <div id="tab-advisor" class="tab-panel">
           <h2 class="panel-title">💼 Advisor</h2>
           <p class="panel-desc">Questa sezione genera automaticamente un pacchetto contenente esclusivamente:<br>
-          <strong>0 SCHEDA ANAGRAFICA, CONSENSO BTX-IAL</strong>.</p>
+            <strong>0 SCHEDA ANAGRAFICA, CONSENSO BTX-IAL</strong>.
+          </p>
         </div>
 
         <!-- TAB 6: LIBERATORIE -->
@@ -962,11 +978,11 @@
 
         <div class="progress-container" id="progress-container">
           <div class="progress-track">
-          <div class="progress-fill" id="progress-fill"></div>
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <p id="status"></p>
         </div>
-        <p id="status"></p>
-      </div>
-    </div><!-- end action-bar -->
+      </div><!-- end action-bar -->
     </div><!-- end glass-card -->
   </main>
 
@@ -976,12 +992,12 @@
       const statusEl = document.getElementById('status');
       const progressContainer = document.getElementById('progress-container');
       const progressFill = document.getElementById('progress-fill');
-      
+
       const tabs = document.querySelectorAll('.tab-btn');
       const panels = document.querySelectorAll('.tab-panel');
 
       const schedeCheckboxes = document.getElementById('schede-checkboxes');
-      
+
       const clinicSelect = document.getElementById('clinic-select');
       const interventiCheckboxes = document.getElementById('interventi-checkboxes');
       const interventionSelect = document.getElementById('intervention-select');
@@ -1008,7 +1024,7 @@
         tab.addEventListener('click', () => {
           tabs.forEach(t => t.classList.remove('active'));
           panels.forEach(p => p.classList.remove('active'));
-          
+
           tab.classList.add('active');
           document.getElementById(tab.dataset.tab).classList.add('active');
         });
@@ -1021,16 +1037,16 @@
           window.APP_CONFIG.SCHEDE_FILES.forEach(f => {
             const label = document.createElement('label');
             label.className = 'checkbox-wrapper';
-            
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = f;
             checkbox.className = 'tab1-checkbox';
-            
+
             const span = document.createElement('span');
             span.className = 'checkbox-label-text';
             span.textContent = f.replace('.pdf', '');
-            
+
             label.appendChild(checkbox);
             label.appendChild(span);
             schedeCheckboxes.appendChild(label);
@@ -1042,21 +1058,21 @@
           window.APP_CONFIG.PDF_FILES.forEach(f => {
             const label = document.createElement('label');
             label.className = 'checkbox-wrapper';
-            
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = f;
             checkbox.className = 'tab2-checkbox';
-            
-            if (f.startsWith('1 ') || f.startsWith('2 ') || f.startsWith('3 ') || 
-                f.startsWith('4 ') || f.startsWith('5 ') || f.startsWith('6 ')) {
-                checkbox.checked = true;
+
+            if (f.startsWith('1 ') || f.startsWith('2 ') || f.startsWith('3 ') ||
+              f.startsWith('4 ') || f.startsWith('5 ') || f.startsWith('6 ')) {
+              checkbox.checked = true;
             }
-            
+
             const span = document.createElement('span');
             span.className = 'checkbox-label-text';
             span.textContent = f.replace('.pdf', '');
-            
+
             label.appendChild(checkbox);
             label.appendChild(span);
             interventiCheckboxes.appendChild(label);
@@ -1124,15 +1140,15 @@
         const isExternal = e.target.value === 'external';
         const checkboxes = document.querySelectorAll('.tab2-checkbox');
         checkboxes.forEach(cb => {
-            if (cb.value === window.APP_CONFIG.ANESTESIA_PDF) {
-                if (isExternal) {
-                    cb.checked = false;
-                    cb.parentElement.style.opacity = '0.5';
-                } else {
-                    cb.checked = true;
-                    cb.parentElement.style.opacity = '1';
-                }
+          if (cb.value === window.APP_CONFIG.ANESTESIA_PDF) {
+            if (isExternal) {
+              cb.checked = false;
+              cb.parentElement.style.opacity = '0.5';
+            } else {
+              cb.checked = true;
+              cb.parentElement.style.opacity = '1';
             }
+          }
         });
       });
 
@@ -1152,64 +1168,64 @@
         }
 
         let files = [];
-        
+
         // Determina quale TAB è attualmente attiva per processare la logica giusta
         const activeTab = document.querySelector('.tab-panel.active').id;
 
         if (activeTab === 'tab-schede') {
-            // Prende solo le schede selezionate liberamente
-            const selected = document.querySelectorAll('.tab1-checkbox:checked');
-            selected.forEach(cb => files.push(cb.value));
+          // Prende solo le schede selezionate liberamente
+          const selected = document.querySelectorAll('.tab1-checkbox:checked');
+          selected.forEach(cb => files.push(cb.value));
 
         } else if (activeTab === 'tab-interventi') {
-            // Prende le schede base selezionate
-            const selected = document.querySelectorAll('.tab2-checkbox:checked');
-            selected.forEach(cb => files.push(cb.value));
+          // Prende le schede base selezionate
+          const selected = document.querySelectorAll('.tab2-checkbox:checked');
+          selected.forEach(cb => files.push(cb.value));
 
-            const isExternalClinic = clinicSelect.value === 'external';
+          const isExternalClinic = clinicSelect.value === 'external';
 
-            // Sicurezza aggiuntiva per rimuovere anestesia
-            if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
-              files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
+          // Sicurezza aggiuntiva per rimuovere anestesia
+          if (isExternalClinic && window.APP_CONFIG.ANESTESIA_PDF) {
+            files = files.filter(f => f !== window.APP_CONFIG.ANESTESIA_PDF);
+          }
+
+          // Aggiungi Intervento e Protesi
+          const selectedIntervention = interventionSelect.value;
+          if (selectedIntervention) {
+            files.push(selectedIntervention);
+            const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
+            if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
+              window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText) &&
+              window.APP_CONFIG.PROTESI_PDF) {
+              files.push(window.APP_CONFIG.PROTESI_PDF);
             }
+          }
 
-            // Aggiungi Intervento e Protesi
-            const selectedIntervention = interventionSelect.value;
-            if (selectedIntervention) {
-              files.push(selectedIntervention);
-              const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
-              if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
-                window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText) &&
-                window.APP_CONFIG.PROTESI_PDF) {
-                files.push(window.APP_CONFIG.PROTESI_PDF);
-              }
-            }
-
-            // Aggiungi IBAN se in sede esterna
-            if (isExternalClinic && window.APP_CONFIG.IBAN_PDF) {
-              files.push(window.APP_CONFIG.IBAN_PDF);
-            }
+          // Aggiungi IBAN se in sede esterna
+          if (isExternalClinic && window.APP_CONFIG.IBAN_PDF) {
+            files.push(window.APP_CONFIG.IBAN_PDF);
+          }
 
         } else if (activeTab === 'tab-aicpe') {
-            // Prende solo il singolo consenso AICPE selezionato
-            if (aicpeSelect.value) {
-                files.push(aicpeSelect.value);
-            }
+          // Prende solo il singolo consenso AICPE selezionato
+          if (aicpeSelect.value) {
+            files.push(aicpeSelect.value);
+          }
 
         } else if (activeTab === 'tab-locale') {
-            // Logica Cablata per Interventi in Locale
-            files = [...(window.APP_CONFIG.INTERVENTI_LOCALE_FILES || [])];
+          // Logica Cablata per Interventi in Locale
+          files = [...(window.APP_CONFIG.INTERVENTI_LOCALE_FILES || [])];
 
         } else if (activeTab === 'tab-advisor') {
-            // Logica Cablata per Advisor
-            files = [...(window.APP_CONFIG.ADVISOR_FILES || [])];
+          // Logica Cablata per Advisor
+          files = [...(window.APP_CONFIG.ADVISOR_FILES || [])];
         } else if (activeTab === 'tab-liberatorie') {
-            const selected = document.querySelectorAll('.tab6-checkbox:checked');
-            selected.forEach(cb => files.push(cb.value));
+          const selected = document.querySelectorAll('.tab6-checkbox:checked');
+          selected.forEach(cb => files.push(cb.value));
 
         } else if (activeTab === 'tab-certificati') {
-            const selected = document.querySelectorAll('.tab7-checkbox:checked');
-            selected.forEach(cb => files.push(cb.value));
+          const selected = document.querySelectorAll('.tab7-checkbox:checked');
+          selected.forEach(cb => files.push(cb.value));
         }
 
         if (files.length === 0) {
@@ -1243,10 +1259,10 @@
 
             const bytes = await resp.arrayBuffer();
             const pdf = await PDFDocument.load(bytes);
-            
+
             // Check se il file rientra tra quelli "Fronte/Retro"
-            const isDoubleSided = window.APP_CONFIG.DOUBLE_SIDED_FILES && 
-                                  window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+            const isDoubleSided = window.APP_CONFIG.DOUBLE_SIDED_FILES &&
+              window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
 
             // Regola 1 (Solo se siamo in modalità Pacchetto): Ogni nuovo documento deve iniziare su fronte.
             if (!isSingleFileMode && merged.getPageCount() % 2 !== 0) {
@@ -1255,7 +1271,7 @@
             }
 
             const pages = await merged.copyPages(pdf, pdf.getPageIndices());
-            
+
             // Regola 2 & 3: Inserimento pagine
             if (isSingleFileMode || isDoubleSided) {
               // Singolo File o Fronte-Retro: Tutte le pagine attaccate (nessuna pagina bianca extra)
@@ -1264,7 +1280,7 @@
               // Solo Fronte (Modalità Pacchetto): Inseriamo una pagina bianca dopo OGNI pagina reale di questo documento
               const width = pages[0].getWidth();
               const height = pages[0].getHeight();
-              
+
               pages.forEach(p => {
                 merged.addPage(p);
                 // Aggiungi una pagina vuota per forzare il "retro" bianco del foglio
@@ -1279,14 +1295,14 @@
 
           // --- OVERLAY DATI PAZIENTE (per-documento) ---
           const pazCognome = document.getElementById('paz-cognome').value.trim();
-          const pazNome    = document.getElementById('paz-nome').value.trim();
+          const pazNome = document.getElementById('paz-nome').value.trim();
 
           if (pazCognome || pazNome) {
             setStatus('Compilazione dati paziente nel documento...', 'info');
-            const font     = await merged.embedFont(PDFLib.StandardFonts.Helvetica);
+            const font = await merged.embedFont(PDFLib.StandardFonts.Helvetica);
             const fontSize = 10;
-            const color    = PDFLib.rgb(0.05, 0.05, 0.05);
-            const pages    = merged.getPages();
+            const color = PDFLib.rgb(0.05, 0.05, 0.05);
+            const pages = merged.getPages();
 
             // =========================================================
             // PER_DOC_COORDS — Nome + Cognome per ogni documento
@@ -1301,12 +1317,12 @@
               // ✓ CARTELLA CLINICA: campi separati (Cognome, Nome)
               '1 cartella clinica.pdf': [
                 [pazCognome, 107, 160],
-                [pazNome,    388, 160],
+                [pazNome, 388, 160],
               ],
               // ✓ SCHEDA ANAGRAFICA: campi separati (Cognome, Nome)
               '0 SCHEDA ANAGRAFICA 2026.pdf': [
-                [pazCognome,  93, 100],
-                [pazNome,    329, 100],
+                [pazCognome, 93, 100],
+                [pazNome, 329, 100],
               ],
               // -- Moduli con campo unico "Il/La sottoscritto/a" o "Io Sottoscritto/a" --
               '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': [
@@ -1322,18 +1338,18 @@
                 [fullName, 172, 219],
               ],
               '6 Tabella Medicazioni.pdf': [
-                [fullName, 150,  83],  // alzato di 20pt (103→83)
+                [fullName, 150, 83],  // alzato di 20pt (103→83)
               ],
               // --- MODULI INTERVENTO (AICPE) ---
               'ADDOMINOPLASTICA.pdf': [[fullName, 190, 218]],
               'BLEFAROPLASTICA.pdf': [[fullName, 190, 218]],
-              'CERTIFICATO INT.MINORI NEW.pdf': [[fullName, 190, 218]],
-              'LIFTING_DEL_VISO.pdf': [[fullName, 190, 218]],
-              'LIPOSUZIONE.pdf': [[fullName, 190, 218]],
-              'MASTOPLASTICA ADDITIVA.pdf': [[fullName, 190, 218]],
-              'MASTOPLASTICA RIDUTTIVA.pdf': [[fullName, 190, 218]],
-              'OTOPLASTICA.pdf': [[fullName, 190, 218]],
-              'RINOPLASTICA.pdf': [[fullName, 190, 218]],
+              'CERTIFICATO INT.MINORI NEW.pdf': [[fullName, 180, 220]],
+              'LIFTING_DEL_VISO.pdf': [[fullName, 170, 195]],
+              'LIPOSUZIONE.pdf': [[fullName, 180, 205]],
+              'MASTOPLASTICA ADDITIVA.pdf': [[fullName, 185, 178]],
+              'MASTOPLASTICA RIDUTTIVA.pdf': [[fullName, 180, 205]],
+              'OTOPLASTICA.pdf': [[fullName, 188, 210]],
+              'RINOPLASTICA.pdf': [[fullName, 177, 185]],
             };
 
             // Walk through the files array and track starting page for each doc
@@ -1350,7 +1366,7 @@
               }
               // Advance offset: double-sided docs keep their page count; single-sided get blank pages paired
               const isDS = window.APP_CONFIG.DOUBLE_SIDED_FILES &&
-                           window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+                window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
               // We can't know exact page count here without re-loading the PDF,
               // so we use 2 as the step (works for all 1-2 page docs; adjust if needed)
               pageOffset += 2;
