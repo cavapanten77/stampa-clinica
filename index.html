@@ -1139,22 +1139,22 @@
       interventionSelect.addEventListener('change', (e) => {
         const val = e.target.value;
         const checkboxes = document.querySelectorAll('.tab2-checkbox');
-        
+
         // Reset checkboxes to default state based on clinic
         const isExternal = clinicSelect.value === 'external';
         checkboxes.forEach(cb => {
-          if (cb.value.startsWith('1 ') || cb.value.startsWith('2 ') || cb.value.startsWith('3 ') || 
-              cb.value.startsWith('4 ') || cb.value.startsWith('5 ') || cb.value.startsWith('6 ')) {
-              cb.checked = true;
+          if (cb.value.startsWith('1 ') || cb.value.startsWith('2 ') || cb.value.startsWith('3 ') ||
+            cb.value.startsWith('4 ') || cb.value.startsWith('5 ') || cb.value.startsWith('6 ')) {
+            cb.checked = true;
           } else {
-              cb.checked = false;
+            cb.checked = false;
           }
-          
+
           if (cb.value === window.APP_CONFIG.ANESTESIA_PDF && isExternal) {
-              cb.checked = false;
+            cb.checked = false;
           }
           if (cb.value === window.APP_CONFIG.IBAN_PDF && isExternal) {
-              cb.checked = true;
+            cb.checked = true;
           }
         });
 
@@ -1162,7 +1162,7 @@
         if (val) {
           const selectedText = interventionSelect.options[interventionSelect.selectedIndex].text;
           if (window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI &&
-              window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText)) {
+            window.APP_CONFIG.BREAST_INTERVENTIONS_REQUIRING_PROTESI.includes(selectedText)) {
             checkboxes.forEach(cb => {
               if (cb.value === window.APP_CONFIG.PROTESI_PDF) cb.checked = true;
             });
@@ -1216,20 +1216,20 @@
           selected.forEach(cb => files.push(cb.value));
 
         } else if (activeTab === 'tab-interventi') {
-            // Prende solo le schede base selezionate dai checkbox (che ora includono intervento e protesi se selezionati)
-            const selected = document.querySelectorAll('.tab2-checkbox:checked');
-            selected.forEach(cb => files.push(cb.value));
+          // Prende solo le schede base selezionate dai checkbox (che ora includono intervento e protesi se selezionati)
+          const selected = document.querySelectorAll('.tab2-checkbox:checked');
+          selected.forEach(cb => files.push(cb.value));
 
-            // Aggiungi Intervento Specifico se selezionato (se non è già tra i checkbox, ma lo iniettiamo ora)
-            const selectedIntervention = interventionSelect.value;
-            if (selectedIntervention && !files.includes(selectedIntervention)) {
-              files.push(selectedIntervention);
-            }
-            // Aggiungi IBAN se in sede esterna (se non è già tra i checkbox)
-            const isExternalClinic = clinicSelect.value === 'external';
-            if (isExternalClinic && window.APP_CONFIG.IBAN_PDF && !files.includes(window.APP_CONFIG.IBAN_PDF)) {
-              files.push(window.APP_CONFIG.IBAN_PDF);
-            }
+          // Aggiungi Intervento Specifico se selezionato (se non è già tra i checkbox, ma lo iniettiamo ora)
+          const selectedIntervention = interventionSelect.value;
+          if (selectedIntervention && !files.includes(selectedIntervention)) {
+            files.push(selectedIntervention);
+          }
+          // Aggiungi IBAN se in sede esterna (se non è già tra i checkbox)
+          const isExternalClinic = clinicSelect.value === 'external';
+          if (isExternalClinic && window.APP_CONFIG.IBAN_PDF && !files.includes(window.APP_CONFIG.IBAN_PDF)) {
+            files.push(window.APP_CONFIG.IBAN_PDF);
+          }
 
         } else if (activeTab === 'tab-aicpe') {
           // Prende solo il singolo consenso AICPE selezionato
@@ -1350,7 +1350,7 @@
               // -- Moduli con campo unico "Il/La sottoscritto/a" o "Io Sottoscritto/a" --
               '2 consenso anestesia, liberatoria, richiesta cart clin.pdf': {
                 0: [[fullName, 146, 105]],
-                1: [[fullName, 145, 115]]
+                1: [[fullName, 140, 100]]
               },
               '3 Consenso Generico .pdf': {
                 0: [[fullName, 180, 220]]
@@ -1398,8 +1398,8 @@
 
               // Determina quante pagine occupa questo documento nel pacchetto finale
               const isDS = window.APP_CONFIG.DOUBLE_SIDED_FILES &&
-                           window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
-              
+                window.APP_CONFIG.DOUBLE_SIDED_FILES.includes(filename);
+
               // Logica identica a quella usata nel merge per saltare le pagine corrette
               // Se single-sided, ogni pagina originale è seguita da una bianca.
               // Se double-sided o single-file, le pagine sono consecutive.
